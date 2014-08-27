@@ -25,6 +25,7 @@ Export environment variables
 
 In the directory that contains the pom.xml run
 
+    mvn initialize
 	mvn package jetty:run
 
 **Note: Doing a mvn clean will delete the H2 DB and wipe out all the data.
