@@ -47,8 +47,7 @@
                     <div class="nav-img"><img src="<%= request.getContextPath() %>/img/keybox_50x38.png"/></div>
                 </div>
                 <div class="navbar-brand">
-                    KeyBox
-                    <span class="note" style="padding-top:2px;font-size: x-small"> - OpenShift</span>
+                    KeyBox<span class="note" style="padding-top:2px;font-size: x-small"> - OpenShift</span>
                 </div>
             </div>
             <!--/.nav-collapse -->
