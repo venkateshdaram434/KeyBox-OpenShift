@@ -18,7 +18,9 @@ package com.keybox.manage.action;
 import com.keybox.common.util.AuthUtil;
 import com.keybox.manage.db.AuthDB;
 import com.keybox.manage.db.SystemDB;
+import com.keybox.manage.model.HostSystem;
 import com.keybox.manage.model.SortedSet;
+import com.openshift.client.*;
 import com.opensymphony.xwork2.ActionSupport;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.struts2.convention.annotation.Action;
@@ -34,7 +36,7 @@ import java.util.Map;
 /**
  * Action to manage systems
  */
-public class SystemAction extends ActionSupport  implements ServletRequestAware {
+public class SystemAction extends ActionSupport implements ServletRequestAware {
 
     HttpServletRequest servletRequest;
 
@@ -46,6 +48,49 @@ public class SystemAction extends ActionSupport  implements ServletRequestAware 
     String domain;
     String appNm;
 
+    @Action(value = "/admin/setSystems",
+            results = {
+                    @Result(name = "success", location = "/admin/viewSystems.action", type = "redirect"),
+                    @Result(name = "error", location = "/login.action", type = "redirect")
+            }
+    )
+    public String setAdminSystems() {
+
+        String retVal = SUCCESS;
+
+        String authToken = AuthUtil.getAuthToken(servletRequest.getSession());
+
+
+        Long userId = AuthDB.getUserIdByAuthToken(authToken);
+        //delete all systems for user and get latest from openshift
+        SystemDB.deleteSystems(userId);
+
+        try {
+            IOpenShiftConnection connection = new OpenShiftConnectionFactory().getAuthTokenConnection("keybox", authToken);
+            IUser user = connection.getUser();
+
+
+            for (IDomain domain : user.getDomains()) {
+                for (IApplication app : domain.getApplications()) {
+                    String sshUrl = app.getSshUrl().replaceAll("ssh://", "");
+
+                    HostSystem hostSystem = new HostSystem();
+                    hostSystem.setUser(sshUrl.split("@")[0]);
+                    hostSystem.setHost(sshUrl.split("@")[1]);
+                    hostSystem.setAppNm(app.getName());
+                    hostSystem.setDomain(app.getDomain().getId());
+                    hostSystem.setUserId(userId);
+
+                    SystemDB.insertSystem(hostSystem);
+
+                }
+            }
+        } catch (OpenShiftEndpointException ex) {
+            ex.printStackTrace();
+            retVal = ERROR;
+        }
+        return retVal;
+    }
 
     @Action(value = "/admin/viewSystems",
             results = {
@@ -55,20 +100,20 @@ public class SystemAction extends ActionSupport  implements ServletRequestAware 
     public String viewAdminSystems() {
 
 
-        Long userId= AuthDB.getUserIdByAuthToken(AuthUtil.getAuthToken(servletRequest.getSession()));
+        Long userId = AuthDB.getUserIdByAuthToken(AuthUtil.getAuthToken(servletRequest.getSession()));
 
         //create filter for map
-        Map<String, String> filter= new LinkedHashMap<String,String>();
-        if(StringUtils.isNotEmpty(appNm)){
+        Map<String, String> filter = new LinkedHashMap<String, String>();
+        if (StringUtils.isNotEmpty(appNm)) {
             filter.put("app_nm", appNm);
         }
-        if(StringUtils.isNotEmpty(domain)){
+        if (StringUtils.isNotEmpty(domain)) {
             filter.put("domain", domain);
         }
         sortedSet = SystemDB.getSystemSet(sortedSet, filter, userId);
 
-        domainList=SystemDB.getDomains(userId);
-        appNmList=SystemDB.getAppNms(userId);
+        domainList = SystemDB.getDomains(userId);
+        appNmList = SystemDB.getAppNms(userId);
 
 
         return SUCCESS;

@@ -279,6 +279,9 @@ div.termwrapper div h6 {
     margin-top: -8px;
     margin-left: -50px;
 }
+.navbar-brand {
+    padding: 15px 5px 0 15px
+}
 
 
 

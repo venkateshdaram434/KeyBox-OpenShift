@@ -18,7 +18,6 @@ package com.keybox.manage.db;
 import com.keybox.manage.model.HostSystem;
 import com.keybox.manage.model.SortedSet;
 import com.keybox.manage.util.DBUtils;
-import org.apache.commons.lang3.StringUtils;
 
 import java.sql.Connection;
 

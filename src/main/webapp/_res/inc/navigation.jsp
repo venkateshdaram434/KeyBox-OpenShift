@@ -22,9 +22,12 @@
     <div class="container">
 
         <div class="navbar-header">
-            <div class="navbar-brand">
+            <div class="navbar-brand" >
                 <div class="nav-img"><img src="<%= request.getContextPath() %>/img/keybox_50x38.png"/></div>
-                KeyBox - <small>OpenShift</small>
+            </div>
+            <div class="navbar-brand">
+                KeyBox
+                <span class="note" style="padding-top:2px;font-size: x-small"> - OpenShift</span>
             </div>
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                      <span class="sr-only">Toggle navigation</span>
@@ -35,7 +38,7 @@
         </div>
         <div class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
-                <li><a href="../admin/viewSystems.action">Secure Shell</a></li>
+                <li><a href="../admin/setSystems.action">Secure Shell</a></li>
 
                 <li><a href="../logout.action">Logout</a></li>
             </ul>

@@ -19,12 +19,9 @@ import com.keybox.common.util.AppConfig;
 import com.keybox.common.util.AuthUtil;
 import com.keybox.manage.db.AuthDB;
 import com.keybox.manage.db.PrivateKeyDB;
-import com.keybox.manage.db.SystemDB;
 import com.keybox.manage.model.ApplicationKey;
 import com.keybox.manage.model.Auth;
-import com.keybox.manage.model.HostSystem;
 import com.openshift.client.*;
-import com.openshift.client.configuration.OpenShiftConfiguration;
 import com.opensymphony.xwork2.ActionSupport;
 import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.Result;
@@ -33,7 +30,6 @@ import org.apache.struts2.interceptor.ServletResponseAware;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 
 /**
@@ -45,7 +41,7 @@ public class LoginAction extends ActionSupport implements ServletRequestAware, S
     HttpServletRequest servletRequest;
     Auth auth;
 
-    private static final String generatedKeyNm=AppConfig.getProperty("generatedKeyNm");
+    private static final String generatedKeyNm = AppConfig.getProperty("generatedKeyNm");
 
     @Action(value = "/login",
             results = {
@@ -71,7 +67,7 @@ public class LoginAction extends ActionSupport implements ServletRequestAware, S
     @Action(value = "/loginSubmit",
             results = {
                     @Result(name = "input", location = "/login.jsp"),
-                    @Result(name = "success", location = "/admin/viewSystems.action", type = "redirect")
+                    @Result(name = "success", location = "/admin/setSystems.action", type = "redirect")
             }
     )
     public String loginSubmit() {
@@ -80,53 +76,32 @@ public class LoginAction extends ActionSupport implements ServletRequestAware, S
 
         String authToken = null;
         try {
-            String openshiftServer = new OpenShiftConfiguration().getLibraServer();
-            IOpenShiftConnection connection = new OpenShiftConnectionFactory().getConnection("keybox", auth.getUsername(), auth.getPassword(), openshiftServer);
+            IOpenShiftConnection connection = new OpenShiftConnectionFactory().getConnection("keybox", auth.getUsername(), auth.getPassword());
 
             IUser user = connection.getUser();
+
+            //set auth token
+            auth.setAuthToken(user.getAuthorization().getToken());
 
             authToken = AuthDB.login(auth);
 
             //get userId for auth token
-            Long userId=AuthDB.getUserIdByAuthToken(authToken);
-
+            Long userId = AuthDB.getUserIdByAuthToken(authToken);
 
             //add generated public key
             ApplicationKey appKey = PrivateKeyDB.createApplicationKey(userId);
 
             //set public key
-            String publicKey=appKey.getPublicKey().split(" ")[1];
+            String publicKey = appKey.getPublicKey().split(" ")[1];
 
             //check to see if key exists and matches
-            ISSHPublicKey existingKey= user.getSSHKeyByName(generatedKeyNm);
-            if(existingKey==null || !publicKey.equals(existingKey.getPublicKey())){
+            ISSHPublicKey existingKey = user.getSSHKeyByName(generatedKeyNm);
+            if (existingKey == null || !publicKey.equals(existingKey.getPublicKey())) {
                 user.deleteKey(generatedKeyNm);
                 appKey.setPublicKey(publicKey);
                 user.putSSHKey(generatedKeyNm, appKey);
             }
 
-
-            //delete all systems for user and get latest from openshift
-            SystemDB.deleteSystems(userId);
-            for(IDomain domain : user.getDomains()){
-                for(IApplication app : domain.getApplications()){
-                    String sshUrl=app.getSshUrl().replaceAll("ssh://","");
-
-                    HostSystem hostSystem= new HostSystem();
-                    hostSystem.setUser(sshUrl.split("@")[0]);
-                    hostSystem.setHost(sshUrl.split("@")[1]);
-                    hostSystem.setAppNm(app.getName());
-                    hostSystem.setDomain(app.getDomain().getId());
-                    hostSystem.setUserId(userId);
-
-                    SystemDB.insertSystem(hostSystem);
-
-
-                }
-            }
-
-        } catch (IOException ex) {
-            ex.printStackTrace();
         } catch (OpenShiftEndpointException ex) {
             ex.printStackTrace();
         }
@@ -150,6 +125,11 @@ public class LoginAction extends ActionSupport implements ServletRequestAware, S
             }
     )
     public String logout() {
+
+        String authToken = AuthUtil.getAuthToken(servletRequest.getSession());
+        IOpenShiftConnection connection = new OpenShiftConnectionFactory().getAuthTokenConnection("keybox", authToken);
+        connection.getUser().getAuthorization().destroy();
+
         AuthUtil.deleteAllSession(servletRequest.getSession());
         return SUCCESS;
     }

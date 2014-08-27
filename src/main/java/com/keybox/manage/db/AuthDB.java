@@ -22,7 +22,6 @@ import org.apache.commons.lang3.StringUtils;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.UUID;
 
 /**
  * DAO to login administrative users
@@ -36,16 +35,10 @@ public class AuthDB {
      * @return auth token if success
      */
     public static String login(Auth auth) {
-        String authToken = null;
-
 
         Connection con = null;
         try {
             con = DBUtils.getConn();
-
-
-            authToken = UUID.randomUUID().toString();
-            auth.setAuthToken(authToken);
 
             Long userId= getUserIdByUsername(con, auth.getUsername());
 
@@ -63,7 +56,7 @@ public class AuthDB {
         DBUtils.closeConn(con);
 
 
-        return authToken;
+        return auth.getAuthToken();
 
     }
 

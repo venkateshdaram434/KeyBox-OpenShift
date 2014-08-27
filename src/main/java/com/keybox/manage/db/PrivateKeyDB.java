@@ -119,7 +119,7 @@ public class PrivateKeyDB {
                 appKey = getApplicationKey(con, userId);
 
                 //delete generated ssh keys
-                //SSHUtil.deleteGenSSHKeys(userId);
+                SSHUtil.deleteGenSSHKeys(userId);
 
             }
 

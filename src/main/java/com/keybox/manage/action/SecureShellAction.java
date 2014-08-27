@@ -27,8 +27,6 @@ import org.apache.struts2.interceptor.ServletResponseAware;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
-import java.io.StringReader;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -158,7 +156,7 @@ public class SecureShellAction extends ActionSupport implements ServletRequestAw
 
     @Action(value = "/admin/exitTerms",
             results = {
-                    @Result(name = "success", location = "/admin/viewSystems.action", type = "redirect")
+                    @Result(name = "success", location = "/admin/setSystems.action", type = "redirect")
 
             }
     )
