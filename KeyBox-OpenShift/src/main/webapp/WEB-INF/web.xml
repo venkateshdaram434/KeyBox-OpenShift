@@ -46,4 +46,16 @@
         <location>/error.html</location>
     </error-page>
 
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>KeyBox</web-resource-name>
+            <url-pattern>/*</url-pattern>
+            <http-method>GET</http-method>
+            <http-method>POST</http-method>
+        </web-resource-collection>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+
 </web-app>
