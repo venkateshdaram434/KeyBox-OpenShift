@@ -42,7 +42,7 @@ public class LoginAction extends ActionSupport implements ServletRequestAware, S
     HttpServletRequest servletRequest;
     Auth auth;
 
-    private static final String generatedKeyNm = AppConfig.getProperty("generatedKeyNm") + " ("+ OpenShiftUtils.APP_DNS+ ")";
+    private static final String generatedKeyNm = AppConfig.getProperty("generatedKeyNm") + "-"+ OpenShiftUtils.APP_DNS;
 
     @Action(value = "/login",
             results = {
@@ -102,6 +102,7 @@ public class LoginAction extends ActionSupport implements ServletRequestAware, S
             //set public key
             String publicKey = appKey.getPublicKey().split(" ")[1];
 
+            System.out.println(generatedKeyNm);
             //check to see if key exists and matches
             ISSHPublicKey existingKey = user.getSSHKeyByName(generatedKeyNm);
             if (existingKey == null || !publicKey.equals(existingKey.getPublicKey())) {
