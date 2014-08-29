@@ -58,8 +58,8 @@
         <p>
         <s:actionerror/>
         <s:form action="loginSubmit"  autocomplete="off">
-            <s:textfield name="auth.username" label="Account" placeholder="OpenShift account" />
-            <s:password name="auth.password" label="Password"/>
+            <s:textfield name="auth.username" label="Account" placeholder="OpenShift account"  autocomplete="off"/>
+            <s:password name="auth.password" label="Password"  autocomplete="off"/>
             <tr> <td>&nbsp;</td>
                 <td align="right">  <div id="login_btn" class="btn btn-default login" >Login</div></td>
             </tr>
