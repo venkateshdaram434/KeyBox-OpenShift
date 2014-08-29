@@ -82,10 +82,10 @@ public class LoginAction extends ActionSupport implements ServletRequestAware, S
             IUser user = connection.getUser();
 
             //if user is not apart of domain return
-            /*if(!user.hasDomain(OpenShiftUtils.NAMESPACE)){
+            if(!user.hasDomain(OpenShiftUtils.NAMESPACE)){
                 addActionError("User is not associated with Domain");
                 return INPUT;
-            }*/
+            }
 
             //set auth token
             auth.setAuthToken(user.getAuthorization().getToken());
@@ -102,7 +102,7 @@ public class LoginAction extends ActionSupport implements ServletRequestAware, S
             //set public key
             String publicKey = appKey.getPublicKey().split(" ")[1];
 
-            System.out.println(generatedKeyNm);
+
             //check to see if key exists and matches
             ISSHPublicKey existingKey = user.getSSHKeyByName(generatedKeyNm);
             if (existingKey == null || !publicKey.equals(existingKey.getPublicKey())) {

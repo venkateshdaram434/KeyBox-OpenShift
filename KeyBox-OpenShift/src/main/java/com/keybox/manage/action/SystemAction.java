@@ -44,9 +44,7 @@ public class SystemAction extends ActionSupport implements ServletRequestAware {
     SortedSet sortedSet = new SortedSet();
 
     List<String> appNmList = new ArrayList();
-    List<String> domainList = new ArrayList();
 
-    String domain;
     String appNm;
 
     @Action(value = "/admin/setSystems",
@@ -71,20 +69,19 @@ public class SystemAction extends ActionSupport implements ServletRequestAware {
             IUser user = connection.getUser();
 
 
-            for (IDomain domain : user.getDomains()) {
-                for (IApplication app : domain.getApplications()) {
-                    String sshUrl = app.getSshUrl().replaceAll("ssh://", "");
+            IDomain domain = user.getDomain(OpenShiftUtils.NAMESPACE);
+            for (IApplication app : domain.getApplications()) {
+                String sshUrl = app.getSshUrl().replaceAll("ssh://", "");
 
-                    HostSystem hostSystem = new HostSystem();
-                    hostSystem.setUser(sshUrl.split("@")[0]);
-                    hostSystem.setHost(sshUrl.split("@")[1]);
-                    hostSystem.setAppNm(app.getName());
-                    hostSystem.setDomain(app.getDomain().getId());
-                    hostSystem.setUserId(userId);
+                HostSystem hostSystem = new HostSystem();
+                hostSystem.setUser(sshUrl.split("@")[0]);
+                hostSystem.setHost(sshUrl.split("@")[1]);
+                hostSystem.setAppNm(app.getName());
+                hostSystem.setDomain(app.getDomain().getId());
+                hostSystem.setUserId(userId);
 
-                    SystemDB.insertSystem(hostSystem);
+                SystemDB.insertSystem(hostSystem);
 
-                }
             }
         } catch (OpenShiftEndpointException ex) {
             ex.printStackTrace();
@@ -108,12 +105,9 @@ public class SystemAction extends ActionSupport implements ServletRequestAware {
         if (StringUtils.isNotEmpty(appNm)) {
             filter.put("app_nm", appNm);
         }
-        if (StringUtils.isNotEmpty(domain)) {
-            filter.put("domain", domain);
-        }
+
         sortedSet = SystemDB.getSystemSet(sortedSet, filter, userId);
 
-        domainList = SystemDB.getDomains(userId);
         appNmList = SystemDB.getAppNms(userId);
 
 
@@ -142,22 +136,6 @@ public class SystemAction extends ActionSupport implements ServletRequestAware {
 
     public void setAppNmList(List<String> appNmList) {
         this.appNmList = appNmList;
-    }
-
-    public List<String> getDomainList() {
-        return domainList;
-    }
-
-    public void setDomainList(List<String> domainList) {
-        this.domainList = domainList;
-    }
-
-    public String getDomain() {
-        return domain;
-    }
-
-    public void setDomain(String domain) {
-        this.domain = domain;
     }
 
     public String getAppNm() {

@@ -110,8 +110,6 @@
                     <td style="padding-left:0px;"><s:select name="appNm" class="view_frm_select" list="appNmList"
                                                      headerKey="" headerValue="-Select Application-"/>
                     </td>
-                    <td><s:select name="domain" class="view_frm_select" list="domainList"
-                                                            headerKey="" headerValue="-Select Domain-"/></td>
                     <td style="padding:5px 5px 0px 5px;">
                         <div id="view_btn" class="btn btn-default">Filter</div>
                     </td>
@@ -127,8 +125,6 @@
                     <th><s:checkbox name="systemSelectAll" cssClass="systemSelect"
                                     theme="simple"/></th>
                     <th id="<s:property value="@com.keybox.manage.db.SystemDB@SORT_BY_NAME"/>" class="sort">Application
-                    </th>
-                    <th id="<s:property value="@com.keybox.manage.db.SystemDB@SORT_BY_DOMAIN"/>" class="sort">Domain
                     </th>
                     <th id="<s:property value="@com.keybox.manage.db.SystemDB@SORT_BY_USER"/>" class="sort">User
                     </th>
@@ -149,7 +145,6 @@
                         <td>
                             <s:property value="appNm"/>
                         </td>
-                        <td><s:property value="domain"/></td>
                         <td><s:property value="user"/></td>
                         <td><s:property value="host"/></td>
                     </tr>

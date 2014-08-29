@@ -91,7 +91,6 @@ public class PrivateKeyDB {
 
             //generate new key and insert passphrase if no key exists
             if (appKey == null) {
-                System.out.println("Setting KeyBox SSH public/private key pair");
 
                 //generate application pub/pvt key and get values
                 String passphrase = SSHUtil.keyGen(userId);
@@ -107,9 +106,6 @@ public class PrivateKeyDB {
                 stmt.setLong(5, userId);
                 stmt.execute();
                 DBUtils.closeStmt(stmt);
-
-                System.out.println("KeyBox Public Key:");
-                System.out.println(publicKey);
 
                 passphrase = null;
                 publicKey = null;
