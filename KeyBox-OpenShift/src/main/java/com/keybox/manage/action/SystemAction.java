@@ -20,6 +20,7 @@ import com.keybox.manage.db.AuthDB;
 import com.keybox.manage.db.SystemDB;
 import com.keybox.manage.model.HostSystem;
 import com.keybox.manage.model.SortedSet;
+import com.keybox.manage.util.OpenShiftUtils;
 import com.openshift.client.*;
 import com.opensymphony.xwork2.ActionSupport;
 import org.apache.commons.lang3.StringUtils;
@@ -66,7 +67,7 @@ public class SystemAction extends ActionSupport implements ServletRequestAware {
         SystemDB.deleteSystems(userId);
 
         try {
-            IOpenShiftConnection connection = new OpenShiftConnectionFactory().getAuthTokenConnection("keybox", authToken);
+            IOpenShiftConnection connection = new OpenShiftConnectionFactory().getAuthTokenConnection(OpenShiftUtils.CLIENT_NAME, authToken);
             IUser user = connection.getUser();
 
 

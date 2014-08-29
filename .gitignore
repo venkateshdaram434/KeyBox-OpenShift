@@ -4,6 +4,8 @@
 *.war
 *.ear
 target/*
+KeyBox-OpenShift/target/*
 .idea/*
+KeyBox-OpenShift/.idea/*
 *.iml
 *.DS_Store

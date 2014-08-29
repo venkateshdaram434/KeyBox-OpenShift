@@ -15,15 +15,18 @@
  */
 package com.keybox.manage.model;
 
+import java.lang.String;
+
 /**
  * Value object that contains login information
  */
 public class Auth {
-
     Long id;
     String username;
     String password;
     String authToken;
+    String openshiftId;
+
 
     public String getUsername() {
         return username;
@@ -54,8 +57,16 @@ public class Auth {
     }
 
     public void setId(Long id) {
+
         this.id = id;
     }
 
 
+    public String getOpenshiftId() {
+        return openshiftId;
+    }
+
+    public void setOpenshiftId(String openshiftId) {
+        this.openshiftId = openshiftId;
+    }
 }

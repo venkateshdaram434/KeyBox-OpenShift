@@ -40,7 +40,7 @@ public class AuthDB {
         try {
             con = DBUtils.getConn();
 
-            Long userId= getUserIdByUsername(con, auth.getUsername());
+            Long userId= getUserIdByOpenShiftId(con, auth.getOpenshiftId());
 
             if (userId!= null) {
                 auth.setId(userId);
@@ -102,14 +102,14 @@ public class AuthDB {
      * updates the admin table based on auth id
      *
      * @param con  DB connection
-     * @param auth username object
+     * @param auth user object
      */
     private static void updateLogin(Connection con, Auth auth) {
 
 
         try {
-            PreparedStatement stmt = con.prepareStatement("update users set username=?, auth_token=? where id=?");
-            stmt.setString(1, auth.getUsername());
+            PreparedStatement stmt = con.prepareStatement("update users set openshift_id=?, auth_token=? where id=?");
+            stmt.setString(1, auth.getOpenshiftId());
             stmt.setString(2, auth.getAuthToken());
             stmt.setLong(3, auth.getId());
             stmt.execute();
@@ -127,14 +127,14 @@ public class AuthDB {
      * inserts into the admin table based
      *
      * @param con  DB connection
-     * @param auth username object
+     * @param auth user object
      */
     private static void insertLogin(Connection con, Auth auth) {
 
 
         try {
-            PreparedStatement stmt = con.prepareStatement("insert into users (username, auth_token) values (?,?)");
-            stmt.setString(1, auth.getUsername());
+            PreparedStatement stmt = con.prepareStatement("insert into users (openshift_id, auth_token) values (?,?)");
+            stmt.setString(1, auth.getOpenshiftId());
             stmt.setString(2, auth.getAuthToken());
             stmt.execute();
 
@@ -201,13 +201,13 @@ public class AuthDB {
     }
 
     /**
-     * returns auth object based on username
+     * returns auth object based on openshift id
      *
      * @param con      DB connection
      * @param username username
      * @return auth object
      */
-    public static Long getUserIdByUsername(Connection con, String username) {
+    public static Long getUserIdByOpenShiftId(Connection con, String username) {
         Long userId = null;
         try {
             if (StringUtils.isNotEmpty(username)) {
@@ -252,7 +252,7 @@ public class AuthDB {
                 user = new Auth();
                 user.setId(rs.getLong("id"));
                 user.setAuthToken(rs.getString("auth_token"));
-                user.setUsername(rs.getString("username"));
+                user.setOpenshiftId(rs.getString("openshift_id"));
             }
             DBUtils.closeRs(rs);
             DBUtils.closeStmt(stmt);

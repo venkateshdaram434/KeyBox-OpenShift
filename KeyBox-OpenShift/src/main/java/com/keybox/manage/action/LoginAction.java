@@ -21,6 +21,7 @@ import com.keybox.manage.db.AuthDB;
 import com.keybox.manage.db.PrivateKeyDB;
 import com.keybox.manage.model.ApplicationKey;
 import com.keybox.manage.model.Auth;
+import com.keybox.manage.util.OpenShiftUtils;
 import com.openshift.client.*;
 import com.opensymphony.xwork2.ActionSupport;
 import org.apache.struts2.convention.annotation.Action;
@@ -41,7 +42,7 @@ public class LoginAction extends ActionSupport implements ServletRequestAware, S
     HttpServletRequest servletRequest;
     Auth auth;
 
-    private static final String generatedKeyNm = AppConfig.getProperty("generatedKeyNm");
+    private static final String generatedKeyNm = AppConfig.getProperty("generatedKeyNm") + " ("+ OpenShiftUtils.APP_DNS+ ")";
 
     @Action(value = "/login",
             results = {
@@ -76,12 +77,19 @@ public class LoginAction extends ActionSupport implements ServletRequestAware, S
 
         String authToken = null;
         try {
-            IOpenShiftConnection connection = new OpenShiftConnectionFactory().getConnection("keybox", auth.getUsername(), auth.getPassword());
+            IOpenShiftConnection connection = new OpenShiftConnectionFactory().getConnection(OpenShiftUtils.CLIENT_NAME, auth.getUsername(), auth.getPassword());
 
             IUser user = connection.getUser();
 
+            //if user is not apart of domain return
+            /*if(!user.hasDomain(OpenShiftUtils.NAMESPACE)){
+                addActionError("User is not associated with Domain");
+                return INPUT;
+            }*/
+
             //set auth token
             auth.setAuthToken(user.getAuthorization().getToken());
+            auth.setOpenshiftId(user.getId());
 
             authToken = AuthDB.login(auth);
 
@@ -103,7 +111,7 @@ public class LoginAction extends ActionSupport implements ServletRequestAware, S
             }
 
         } catch (OpenShiftEndpointException ex) {
-            ex.printStackTrace();
+           //ignore login errors
         }
 
 
@@ -126,10 +134,13 @@ public class LoginAction extends ActionSupport implements ServletRequestAware, S
     )
     public String logout() {
 
+        try{
         String authToken = AuthUtil.getAuthToken(servletRequest.getSession());
-        IOpenShiftConnection connection = new OpenShiftConnectionFactory().getAuthTokenConnection("keybox", authToken);
+        IOpenShiftConnection connection = new OpenShiftConnectionFactory().getAuthTokenConnection(OpenShiftUtils.CLIENT_NAME, authToken);
         connection.getUser().getAuthorization().destroy();
-
+        }catch(Exception ex){
+           //ignore exception and logout
+        }
         AuthUtil.deleteAllSession(servletRequest.getSession());
         return SUCCESS;
     }
