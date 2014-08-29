@@ -1,6 +1,6 @@
 KeyBox-OpenShift
 ======
-A web-based SSH console for OpenShift
+A web-based SSH console for applications in an OpenShift domain.
 
 Prerequisites
 -------------
