@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.keybox</groupId>
+    <artifactId>keybox-openshift-template</artifactId>
+    <version>1.00</version>
+    <packaging>pom</packaging>
+    <name>KeyBox-OpenShift-Template</name>
+    <build>
+        <directory>webapps</directory>
+        <plugins>
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.7</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <configuration>
+                            <target>
+			    	<exec dir="KeyBox-OpenShift" executable="sh">
+        				<arg line="-c 'mvn initialize'" />
+    			    	</exec>
+				<exec dir="KeyBox-OpenShift" executable="sh">
+                                        <arg line="-c 'mvn clean package'" />
+                                </exec>
+                                <copy todir="webapps">
+                                    <fileset dir="KeyBox-OpenShift/target/"/>
+                                    <globmapper from="*.war" to="ROOT.war"/>
+                                </copy>
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+
