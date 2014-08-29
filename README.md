@@ -1,5 +1,6 @@
 KeyBox-OpenShift
 ======
+A web-based SSH console for OpenShift
 
 Prerequisites
 -------------
@@ -23,7 +24,13 @@ Open browser to
 
     https://keybox-<namespace>.rhcloud.com
 
-Login with your OpenShift account
+Members of the domain can login with their OpenShift account
+
+KeyBox will generate an SSH key pair and associate the public key with the user's account for every user.
+
+Public Key Name (under "My Account" -> "Settings")
+
+    KeyBox-Generated-keybox-<namespace>.rhcloud.com
 
 
 Acknowledgments
