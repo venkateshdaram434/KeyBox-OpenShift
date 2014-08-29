@@ -1,1 +1,1 @@
-mvn install:install-file -Dfile=../../app-root/repo/lib/openshift-java-client-2.6.0-CUSTOM.jar -DgroupId=com.openshift -DartifactId=openshift-java-client -Dversion=2.6.0-CUSTOM -Dpackaging=jar
+mvn install:install-file -Dfile=$OPENSHIFT_HOMEDIR/app-root/runtime/repo/lib/openshift-java-client-2.6.0-CUSTOM.jar -DgroupId=com.openshift -DartifactId=openshift-java-client -Dversion=2.6.0-CUSTOM -Dpackaging=jar
