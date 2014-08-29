@@ -31,7 +31,7 @@ public class AuthDB {
     /**
      * auth user and return auth token if valid auth
      *
-     * @param auth username object
+     * @param auth user object
      * @return auth token if success
      */
     public static String login(Auth auth) {
@@ -204,16 +204,16 @@ public class AuthDB {
      * returns auth object based on openshift id
      *
      * @param con      DB connection
-     * @param username username
+     * @param openShiftId user openshift id
      * @return auth object
      */
-    public static Long getUserIdByOpenShiftId(Connection con, String username) {
+    public static Long getUserIdByOpenShiftId(Connection con, String openShiftId) {
         Long userId = null;
         try {
-            if (StringUtils.isNotEmpty(username)) {
+            if (StringUtils.isNotEmpty(openShiftId)) {
 
-                PreparedStatement stmt = con.prepareStatement("select * from users where lower(username) like ?");
-                stmt.setString(1, username.toLowerCase());
+                PreparedStatement stmt = con.prepareStatement("select * from users where lower(openshift_id) like ?");
+                stmt.setString(1, openShiftId);
                 ResultSet rs = stmt.executeQuery();
 
                 while (rs.next()) {
