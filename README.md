@@ -26,9 +26,9 @@ Open browser to
 
 Members of the domain can login with their OpenShift account
 
-KeyBox will generate an SSH key pair and associate the public key with the user's account for every user.
+KeyBox will generate an SSH key pair and associate the public key with the user account for every login.
 
-Public Key Name (under "My Account" -> "Settings")
+Public Key Name (Login to "openshift.com", under "My Account" -> "Settings")
 
     KeyBox-Generated-keybox-<namespace>.rhcloud.com
 
