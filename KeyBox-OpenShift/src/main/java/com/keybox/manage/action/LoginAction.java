@@ -83,7 +83,7 @@ public class LoginAction extends ActionSupport implements ServletRequestAware, S
 
             //if user is not apart of domain return
             if(!user.hasDomain(OpenShiftUtils.NAMESPACE)){
-                addActionError("User is not associated with Domain");
+                addActionError("User is not associated with domain");
                 return INPUT;
             }
 
