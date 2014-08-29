@@ -2,17 +2,6 @@ KeyBox-OpenShift
 ======
 A web-based SSH console for OpenShift
 
-Screenshots
------------
-
-![Login](http://sshkeybox.com/img/screenshots/openshift/login.png)
-
-![Select Servers](http://sshkeybox.com/img/screenshots/openshift/server_list.png)
-
-![Terminals](http://sshkeybox.com/img/screenshots/openshift/terms1.png)
-
-![More Terminals](http://sshkeybox.com/img/screenshots/openshift/terms2.png)
-
 Prerequisites
 -------------
 RHC Client tool
@@ -42,6 +31,18 @@ KeyBox will generate an SSH key pair and associate the public key with the user 
 Public Key Name (Login to "openshift.com", under "My Account" -> "Settings")
 
     KeyBox-Generated-keybox-<namespace>.rhcloud.com
+
+
+Screenshots
+-----------
+
+![Login](http://sshkeybox.com/img/screenshots/openshift/login.png)
+
+![Select Servers](http://sshkeybox.com/img/screenshots/openshift/server_list.png)
+
+![Terminals](http://sshkeybox.com/img/screenshots/openshift/terms1.png)
+
+![More Terminals](http://sshkeybox.com/img/screenshots/openshift/terms2.png)
 
 
 Acknowledgments
