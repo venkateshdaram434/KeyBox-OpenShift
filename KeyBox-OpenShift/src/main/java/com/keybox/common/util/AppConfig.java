@@ -29,7 +29,7 @@ public class AppConfig {
 
     static {
         try {
-            prop = new PropertiesConfiguration(AppConfig.class.getClassLoader().getResource(".").getPath() + "/KeyBoxConfig.properties");
+            prop = new PropertiesConfiguration("KeyBoxConfig.properties");
         } catch (Exception ex) {
             ex.printStackTrace();
         }

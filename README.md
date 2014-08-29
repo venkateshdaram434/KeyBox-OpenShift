@@ -3,8 +3,8 @@ KeyBox-OpenShift
 
 Prerequisites
 -------------
-Java JDK 1.7 or greater
-http://www.oracle.com/technetwork/java/javase/overview/index.html
+RHC Client tool
+https://www.openshift.com/developers/rhc-client-tools-install
 
 Browser with Web Socket support
 http://caniuse.com/websockets
@@ -12,23 +12,19 @@ http://caniuse.com/websockets
 **Note: In Safari if using a self-signed certificate you must import the certificate into your Keychain.
 Select 'Show Certificate' -> 'Always Trust' when prompted in Safari
 
-Maven 3 or greater  ( Only needed if building from source )
-http://maven.apache.org
 
-To Build from Source
+Install and Run on OpenShift
 ------
-Export environment variables
+Install with RHC
 
-    export JAVA_HOME=/path/to/jdk
-    export M2_HOME=/path/to/maven
-    export PATH=$JAVA_HOME/bin:$M2_HOME/bin:$PATH
+    rhc app create keybox jbossews-2.0 --from-code git://github.com/skavanagh/KeyBox-OpenShift.git
 
-In the directory that contains the pom.xml run
+Open browser to
 
-    mvn initialize
-	mvn package jetty:run
+    https://keybox-<namespace>.rhcloud.com
 
-**Note: Doing a mvn clean will delete the H2 DB and wipe out all the data.
+Login with your OpenShift account
+
 
 Acknowledgments
 ------
@@ -36,6 +32,7 @@ Special thanks goes to these amazing projects which makes this (and other great 
 
 + [JSch](http://www.jcraft.com/jsch) Java Secure Channel - by [ymnk](https://github.com/ymnk)
 + [term.js](https://github.com/chjj/term.js) A terminal written in javascript - by [chjj](https://github.com/chjj)
+
 
 Author
 ------
