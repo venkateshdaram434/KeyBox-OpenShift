@@ -88,7 +88,7 @@ public class LoginAction extends ActionSupport implements ServletRequestAware, S
             }
 
             //set auth token
-            auth.setAuthToken(user.createAuthorization(OpenShiftUtils.APP_DNS, "session"));
+            auth.setAuthToken(user.createAuthorization(OpenShiftUtils.APP_DNS, "session").getToken());
             auth.setOpenshiftId(user.getId());
 
             authToken = AuthDB.login(auth);
