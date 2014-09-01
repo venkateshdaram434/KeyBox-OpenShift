@@ -189,7 +189,7 @@ div.termwrapper div h6 {
     margin-top: 5px;
     border: 1px solid #CCCCCC;
     float: left;
-    min-width: 600px;
+    min-width: 625px;
 }
 @media screen and (max-width: 1200px) {
     .run_cmd {
