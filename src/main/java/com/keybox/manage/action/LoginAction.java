@@ -54,17 +54,6 @@ public class LoginAction extends ActionSupport implements ServletRequestAware, S
         return SUCCESS;
     }
 
-    @Action(value = "/admin/menu",
-            results = {
-                    @Result(name = "success", location = "/admin/menu.jsp")
-            }
-    )
-    public String menu() {
-
-        return SUCCESS;
-    }
-
-
     @Action(value = "/loginSubmit",
             results = {
                     @Result(name = "input", location = "/login.jsp"),

@@ -166,7 +166,6 @@ public class SSHUtil {
 
             keyPair.writePrivateKey(privateKey, passphrase.getBytes());
             keyPair.writePublicKey(publicKey, comment);
-            System.out.println("Finger print: " + keyPair.getFingerPrint());
             keyPair.dispose();
         } catch (Exception e) {
             System.out.println(e);
@@ -174,58 +173,6 @@ public class SSHUtil {
 
 
         return passphrase;
-
-
-    }
-
-
-    /**
-     * distributes uploaded item to system defined
-     *
-     * @param hostSystem  object contains host system information
-     * @param session     an established SSH session
-     * @param source      source file
-     * @param destination destination file
-     * @return status uploaded file
-     */
-    public static HostSystem pushUpload(HostSystem hostSystem, Session session, String source, String destination) {
-
-
-        hostSystem.setStatusCd(HostSystem.SUCCESS_STATUS);
-        Channel channel = null;
-        ChannelSftp c = null;
-
-        try {
-
-
-            channel = session.openChannel("sftp");
-            channel.setInputStream(System.in);
-            channel.setOutputStream(System.out);
-            channel.connect(CHANNEL_TIMEOUT);
-
-            c = (ChannelSftp) channel;
-            destination = destination.replaceAll("~\\/|~", "");
-
-
-            //get file input stream
-            FileInputStream file = new FileInputStream(source);
-            c.put(file, destination);
-
-
-        } catch (Exception e) {
-            hostSystem.setErrorMsg(e.getMessage());
-            hostSystem.setStatusCd(HostSystem.GENERIC_FAIL_STATUS);
-        }
-        //exit
-        if (c != null) {
-            c.exit();
-        }
-        //disconnect
-        if (channel != null) {
-            channel.disconnect();
-        }
-
-        return hostSystem;
 
 
     }
