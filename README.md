@@ -10,9 +10,6 @@ https://www.openshift.com/developers/rhc-client-tools-install
 Browser with Web Socket support
 http://caniuse.com/websockets
 
-**Note: In Safari if using a self-signed certificate you must import the certificate into your Keychain.
-Select 'Show Certificate' -> 'Always Trust' when prompted in Safari
-
 
 Install and Run on OpenShift
 ------
@@ -26,9 +23,7 @@ Open browser to
 
 Members of the domain can login with their OpenShift account
 
-KeyBox will generate an SSH key pair and associate the public key with the user account for every login.
-
-Public Key Name (Login to "openshift.com", under "My Account" -> "Settings")
+KeyBox will generate an SSH key pair and associate the public key with the user account for every login  (Login to "openshift.com", under "My Account" -> "Settings").
 
     KeyBox-Generated-keybox-<namespace>.rhcloud.com
 
