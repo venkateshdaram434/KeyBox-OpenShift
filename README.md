@@ -33,7 +33,9 @@ Screenshots
 
 ![Login](http://sshkeybox.com/img/screenshots/openshift/login.png)
 
-![Select Servers](http://sshkeybox.com/img/screenshots/openshift/server_list.png)
+![Select Servers 1](http://sshkeybox.com/img/screenshots/openshift/server_list1.png)
+
+![Select Servers 2](http://sshkeybox.com/img/screenshots/openshift/server_list2.png)
 
 ![Terminals](http://sshkeybox.com/img/screenshots/openshift/terms1.png)
 
