@@ -15,6 +15,8 @@
  */
 package com.keybox.manage.model;
 
+import java.util.List;
+
 /**
  * Value object that contains host system information
  */
@@ -25,6 +27,8 @@ public class HostSystem {
     String host;
     Integer port = 22;
     String domain;
+    String gearGroupNm;
+    String cartridgeNm;
     String displayLabel;
     boolean checked=false;
     String statusCd=INITIAL_STATUS;
@@ -113,6 +117,7 @@ public class HostSystem {
 
     public String getAppNm() {
         return appNm;
+        
     }
 
     public void setAppNm(String appNm) {
@@ -128,7 +133,27 @@ public class HostSystem {
         return userId;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public String getCartridgeNm() {
+        return cartridgeNm;
     }
+
+    public void setCartridgeNm(String cartridgeNm) {
+        this.cartridgeNm = cartridgeNm;
+    }
+
+    public void setUserId(Long userId) {
+        
+        this.userId = userId;
+        
+    }
+
+    public String getGearGroupNm() {
+        return gearGroupNm;
+    }
+
+    public void setGearGroupNm(String gearGroupNm) {
+        this.gearGroupNm = gearGroupNm;
+    }
+
+   
 }

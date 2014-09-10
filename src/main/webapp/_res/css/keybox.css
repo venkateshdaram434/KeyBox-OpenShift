@@ -8,8 +8,7 @@ a {
 table {
     border-collapse: collapse;
     font-size: small;
-    min-width: 60%;
-
+    min-width: 95%;
 }
 
 table tbody {
@@ -282,7 +281,13 @@ div.termwrapper div h6 {
 .navbar-brand {
     padding: 15px 5px 0 15px
 }
-
-
+.align_left {
+    padding-left :0px;
+    margin-left :0px;
+}
+.align_right {
+    padding-right :0px;
+    margin-right :0px;
+}
 
 

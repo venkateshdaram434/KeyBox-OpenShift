@@ -33,7 +33,6 @@
             });
 
 
-
             $("#view_btn").button().click(function () {
                 $("#viewSystems").submit();
             });
@@ -95,27 +94,64 @@
 <div class="container">
 
 
-
     <h3>Composite SSH Terminals</h3>
 
-    <s:if test="sortedSet.itemList!= null && !sortedSet.itemList.isEmpty()">
-
+    <s:if test="appNmList!= null && !appNmList.isEmpty()">
         Select the systems below to generate composite SSH sessions in multiple terminals
+        <table style="min-width:0px">
+            <tr>
+                <td class="align_left">
+                    <s:form action="setSystems" theme="simple">
 
-        <s:form action="viewSystems" theme="simple">
-            <s:hidden name="sortedSet.orderByDirection"/>
-            <s:hidden name="sortedSet.orderByField"/>
-            <table style="min-width:0px">
-                <tr>
-                    <td style="padding-left:0px;"><s:select name="appNm" class="view_frm_select" list="appNmList"
-                                                     headerKey="" headerValue="-Select Application-"/>
-                    </td>
-                    <td style="padding:5px 5px 0px 5px;">
-                        <div id="view_btn" class="btn btn-default">Filter</div>
-                    </td>
-                </tr>
-            </table>
-        </s:form>
+                        <s:hidden name="sortedSet.orderByDirection"/>
+                        <s:hidden name="sortedSet.orderByField"/>
+                        <s:if test="showGears==true">
+                            <s:hidden name="showGears" value="false"/>
+                            <s:submit cssClass="btn btn-danger" value="Show Applications"/>
+                        </s:if>
+                        <s:else>
+                            <s:hidden name="showGears" value="true"/>
+                            <s:submit cssClass="btn btn-success" value="Show All Gears"/>
+                        </s:else>
+                    </s:form>
+                </td>
+                <td> |</td>
+                <td>
+                    <s:form action="viewSystems" theme="simple">
+                        <s:hidden name="sortedSet.orderByDirection"/>
+                        <s:hidden name="sortedSet.orderByField"/>
+                        <table style="min-width:0px">
+                            <tr>
+                                <td style="padding-left:0px;"><s:select name="appNm" class="view_frm_select"
+                                                                        list="appNmList"
+                                                                        headerKey=""
+                                                                        headerValue="-Select Application-"/>
+                                </td>
+                                <s:if test="showGears==true">
+                                    <td style="padding-left:0px;"><s:select name="cartridgeNm" class="view_frm_select"
+                                                                            list="cartridgeNmList"
+                                                                            headerKey=""
+                                                                            headerValue="-Select Cartridge-"/>
+                                    </td>
+                                    <td style="padding-left:0px;"><s:select name="gearGroupNm" class="view_frm_select"
+                                                                            list="gearGroupList"
+                                                                            headerKey=""
+                                                                            headerValue="-Select Gear Group-"/>
+                                    </td>
+                                </s:if>
+                                <td style="padding:5px 5px 0px 5px;">
+                                    <s:hidden name="showGears"/>
+                                    <div id="view_btn" class="btn btn-default">Filter</div>
+                                </td>
+                            </tr>
+                        </table>
+                    </s:form>
+                </td>
+            </tr>
+        </table>
+
+    </s:if>
+    <s:if test="sortedSet.itemList!= null && !sortedSet.itemList.isEmpty()">
 
         <s:form action="selectSystemsForCompositeTerms" id="select_frm" theme="simple">
             <table class="table-striped scrollableTable">
@@ -130,6 +166,14 @@
                     </th>
                     <th id="<s:property value="@com.keybox.manage.db.SystemDB@SORT_BY_HOST"/>" class="sort">Host
                     </th>
+                    <s:if test="showGears==true">
+                        <th id="<s:property value="@com.keybox.manage.db.SystemDB@SORT_BY_CARTRIDGE_NM"/>"
+                            class="sort">Cartridge
+                        </th>
+                        <th id="<s:property value="@com.keybox.manage.db.SystemDB@SORT_BY_GEAR_GROUP_NM"/>"
+                            class="sort">Gear Group
+                        </th>
+                    </s:if>
 
                 </tr>
                 </thead>
@@ -147,6 +191,10 @@
                         </td>
                         <td><s:property value="user"/></td>
                         <td><s:property value="host"/></td>
+                        <s:if test="showGears==true">
+                            <td><s:property value="cartridgeNm"/></td>
+                            <td><s:property value="gearGroupNm"/></td>
+                        </s:if>
                     </tr>
 
                 </s:iterator>
@@ -160,7 +208,7 @@
     </s:if>
     <s:else>
         <div class="actionMessage">
-            <p class="error">Systems not available
+            <p class="error">Systems not found 
             </p>
         </div>
     </s:else>

@@ -35,16 +35,45 @@ public class SystemDB {
     public static final String SORT_BY_NAME = "app_nm";
     public static final String SORT_BY_USER = "user";
     public static final String SORT_BY_HOST = "host";
-    public static final String SORT_BY_DOMAIN="domain";
+    public static final String SORT_BY_DOMAIN = "domain";
+    public static final String SORT_BY_GEAR_GROUP_NM = "gear_group_nm";
+    public static final String SORT_BY_CARTRIDGE_NM = "cartridge_nm";
+
 
     /**
      * method to do order by based on the sorted set object for systems
      *
      * @param sortedSet sorted set object
-     * @param filter name value pair to filter by
+     * @param filter    name value pair to filter by
      * @return sortedSet with list of host systems
      */
-    public static SortedSet getSystemSet(SortedSet sortedSet, Map<String,String> filter, Long userId) {
+    public static SortedSet getSystemSet(SortedSet sortedSet, Map<String, String> filter, Long userId) {
+
+        Connection con = null;
+
+        try {
+            con = DBUtils.getConn();
+
+            sortedSet = getSystemSet(con, sortedSet, filter, userId);
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        DBUtils.closeConn(con);
+
+        return sortedSet;
+    }
+    
+    /**
+     * method to do order by based on the sorted set object for systems
+     *
+     * @param con DB Connection
+     * @param sortedSet sorted set object
+     * @param filter    name value pair to filter by
+     * @return sortedSet with list of host systems
+     */
+    public static SortedSet getSystemSet(Connection con, SortedSet sortedSet, Map<String, String> filter, Long userId) {
         List<HostSystem> hostSystemList = new ArrayList<HostSystem>();
 
         String orderBy = "";
@@ -55,20 +84,17 @@ public class SystemDB {
 
         //append filter
         for (Map.Entry<String, String> entry : filter.entrySet()) {
-            sql=sql + entry.getKey() + " like ? and ";
+            sql = sql + entry.getKey() + " like ? and ";
         }
 
         //append user id
-        sql=sql+" user_id=? " + orderBy;
+        sql = sql + " user_id=? " + orderBy;
 
-
-        Connection con = null;
         try {
-            con = DBUtils.getConn();
             PreparedStatement stmt = con.prepareStatement(sql);
 
             //set the values for the filter
-            int i=1;
+            int i = 1;
             for (Map.Entry<String, String> entry : filter.entrySet()) {
                 stmt.setString(i++, entry.getValue());
             }
@@ -83,6 +109,8 @@ public class SystemDB {
                 hostSystem.setHost(rs.getString("host"));
                 hostSystem.setPort(rs.getInt("port"));
                 hostSystem.setDomain(rs.getString("domain"));
+                hostSystem.setGearGroupNm(rs.getString("gear_group_nm"));
+                hostSystem.setCartridgeNm(rs.getString("cartridge_nm"));
                 hostSystemList.add(hostSystem);
             }
             DBUtils.closeRs(rs);
@@ -91,8 +119,6 @@ public class SystemDB {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        DBUtils.closeConn(con);
-
 
         sortedSet.setItemList(hostSystemList);
         return sortedSet;
@@ -103,7 +129,7 @@ public class SystemDB {
     /**
      * returns system by id
      *
-     * @param id system id
+     * @param id     system id
      * @param userId user id
      * @return system
      */
@@ -132,15 +158,14 @@ public class SystemDB {
     /**
      * returns system by id
      *
-     * @param con DB connection
-     * @param id  system id
+     * @param con    DB connection
+     * @param id     system id
      * @param userId user id
      * @return system
      */
     public static HostSystem getSystem(Connection con, Long id, Long userId) {
 
         HostSystem hostSystem = null;
-
 
         try {
 
@@ -157,6 +182,8 @@ public class SystemDB {
                 hostSystem.setHost(rs.getString("host"));
                 hostSystem.setPort(rs.getInt("port"));
                 hostSystem.setDomain(rs.getString("domain"));
+                hostSystem.setGearGroupNm(rs.getString("gear_group_nm"));
+                hostSystem.setCartridgeNm(rs.getString("cartridge_nm"));
             }
             DBUtils.closeRs(rs);
             DBUtils.closeStmt(stmt);
@@ -169,88 +196,101 @@ public class SystemDB {
         return hostSystem;
     }
 
+    /**
+     * sets host system in DB from list
+     *
+     * @param hostSystemList host system object
+     * @param userId user id                      
+     */
+    public static void setSystem(List<HostSystem> hostSystemList, Long userId) {
+        Connection con = null;
+        try {
+            con = DBUtils.getConn();
+
+            deleteSystems(con, userId);
+            for(HostSystem hostSystem: hostSystemList){
+                insertSystem(con, hostSystem);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        DBUtils.closeConn(con);
+
+    }
+    
 
     /**
      * inserts host system into DB
      *
+     * @param con DB connection
      * @param hostSystem host system object
-     * @return user id
+     * @return host system id
      */
-    public static Long insertSystem(HostSystem hostSystem) {
+    public static Long insertSystem(Connection con, HostSystem hostSystem) {
 
-
-        Connection con = null;
-
-        Long userId = null;
+        Long systemId = null;
         try {
-            con = DBUtils.getConn();
-            PreparedStatement stmt = con.prepareStatement("insert into system (app_nm, user, host, port, domain, user_id) values (?,?,?,?,?,?)", PreparedStatement.RETURN_GENERATED_KEYS);
+            PreparedStatement stmt = con.prepareStatement("insert into system (app_nm, user, host, port, domain, gear_group_nm, cartridge_nm, user_id) values (?,?,?,?,?,?,?,?)", PreparedStatement.RETURN_GENERATED_KEYS);
             stmt.setString(1, hostSystem.getAppNm());
             stmt.setString(2, hostSystem.getUser());
             stmt.setString(3, hostSystem.getHost());
             stmt.setInt(4, hostSystem.getPort());
             stmt.setString(5, hostSystem.getDomain());
-            stmt.setLong(6, hostSystem.getUserId());
+            stmt.setString(6, hostSystem.getGearGroupNm());
+            stmt.setString(7, hostSystem.getCartridgeNm());
+            stmt.setLong(8, hostSystem.getUserId());
             stmt.execute();
 
             ResultSet rs = stmt.getGeneratedKeys();
             if (rs.next()) {
-                userId = rs.getLong(1);
+                systemId = rs.getLong(1);
             }
             DBUtils.closeStmt(stmt);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-        DBUtils.closeConn(con);
-        return userId;
+        return systemId;
 
     }
 
     /**
      * updates host system record
      *
+     * @param con DB connection
      * @param hostSystem host system object
      */
-    public static void updateSystem(HostSystem hostSystem) {
-
-
-        Connection con = null;
+    public static void updateSystem(Connection con, HostSystem hostSystem) {
 
         try {
-            con = DBUtils.getConn();
-
-            PreparedStatement stmt = con.prepareStatement("update system set app_nm=?, user=?, host=?, port=?, domain=?, user_id=?  where id=?");
+            PreparedStatement stmt = con.prepareStatement("update system set app_nm=?, user=?, host=?, port=?, domain=?, gear_group_nm=?, cartridge_nm=?, user_id=?  where id=?");
             stmt.setString(1, hostSystem.getAppNm());
             stmt.setString(2, hostSystem.getUser());
             stmt.setString(3, hostSystem.getHost());
             stmt.setInt(4, hostSystem.getPort());
             stmt.setString(5, hostSystem.getDomain());
-            stmt.setLong(6, hostSystem.getUserId());
-            stmt.setLong(7, hostSystem.getId());
+            stmt.setString(6, hostSystem.getGearGroupNm());
+            stmt.setString(7, hostSystem.getCartridgeNm());
+            stmt.setLong(8, hostSystem.getUserId());
+            stmt.setLong(9, hostSystem.getId());
             stmt.execute();
             DBUtils.closeStmt(stmt);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-        DBUtils.closeConn(con);
 
-    }
+    } 
 
     /**
      * deletes host system
      *
+     * @param con DB connection
      * @param userId host system id
      */
-    public static void deleteSystems(Long userId) {
-
-
-        Connection con = null;
+    public static void deleteSystems(Connection con, Long userId) {
 
         try {
-            con = DBUtils.getConn();
-
             PreparedStatement stmt = con.prepareStatement("delete from system where user_id=?");
             stmt.setLong(1, userId);
             stmt.execute();
@@ -259,10 +299,8 @@ public class SystemDB {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        DBUtils.closeConn(con);
 
     }
-
 
 
     /**
@@ -307,23 +345,18 @@ public class SystemDB {
 
     }
 
-
-
-    public static List<String> getDomains(Long userId){
+    public static List<String> getDomains(Connection con, Long userId) {
 
         List<String> domainList = new ArrayList<String>();
 
 
-
-        Connection con = null;
         try {
-            con = DBUtils.getConn();
             PreparedStatement stmt = con.prepareStatement("select distinct domain from system where user_id=?");
             stmt.setLong(1, userId);
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-               domainList.add(rs.getString("domain"));
+                domainList.add(rs.getString("domain"));
             }
             DBUtils.closeRs(rs);
             DBUtils.closeStmt(stmt);
@@ -331,22 +364,17 @@ public class SystemDB {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        DBUtils.closeConn(con);
-
-
 
         return domainList;
     }
 
-    public static List<String> getAppNms(Long userId){
+
+    public static List<String> getAppNms(Connection con, Long userId) {
 
         List<String> appNmList = new ArrayList<String>();
 
 
-
-        Connection con = null;
         try {
-            con = DBUtils.getConn();
             PreparedStatement stmt = con.prepareStatement("select distinct app_nm from system where user_id=?");
             stmt.setLong(1, userId);
             ResultSet rs = stmt.executeQuery();
@@ -360,10 +388,53 @@ public class SystemDB {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        DBUtils.closeConn(con);
-
-
 
         return appNmList;
+    }
+
+    public static List<String> getGearNms(Connection con, Long userId) {
+
+        List<String> gearGroupList = new ArrayList<String>();
+
+
+        try {
+            PreparedStatement stmt = con.prepareStatement("select distinct gear_group_nm from system where user_id=?");
+            stmt.setLong(1, userId);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                gearGroupList.add(rs.getString("gear_group_nm"));
+            }
+            DBUtils.closeRs(rs);
+            DBUtils.closeStmt(stmt);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        return gearGroupList;
+    }
+
+    public static List<String> getCartridgeNms(Connection con, Long userId) {
+
+        List<String> cartridgeList = new ArrayList<String>();
+
+        try {
+            PreparedStatement stmt = con.prepareStatement("select distinct cartridge_nm from system where user_id=?");
+            stmt.setLong(1, userId);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                cartridgeList.add(rs.getString("cartridge_nm"));
+            }
+            DBUtils.closeRs(rs);
+            DBUtils.closeStmt(stmt);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return cartridgeList;
     }
 }
