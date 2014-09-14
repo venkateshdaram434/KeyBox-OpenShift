@@ -1,6 +1,6 @@
 KeyBox-OpenShift
 ======
-A web-based SSH console for applications in an OpenShift domain. Share terminal commands on multiple gears simultaneously.
+A web-based SSH console for applications in an OpenShift domain. Connect and share terminal commands on multiple gears simultaneously.
 
 Prerequisites
 -------------
