@@ -66,7 +66,7 @@ public class LoginAction extends ActionSupport implements ServletRequestAware, S
 
         String authToken = null;
         try {
-            IOpenShiftConnection connection = new OpenShiftConnectionFactory().getConnection(OpenShiftUtils.CLIENT_NAME, auth.getUsername(), auth.getPassword());
+            IOpenShiftConnection connection = new OpenShiftConnectionFactory().getConnection(OpenShiftUtils.CLIENT_NAME, auth.getUsername(), auth.getPassword(), OpenShiftUtils.LIBRA_SERVER);
 
             IUser user = connection.getUser();
 
@@ -126,7 +126,7 @@ public class LoginAction extends ActionSupport implements ServletRequestAware, S
 
         try{
         String authToken = AuthUtil.getAuthToken(servletRequest.getSession());
-        IOpenShiftConnection connection = new OpenShiftConnectionFactory().getAuthTokenConnection(OpenShiftUtils.CLIENT_NAME, authToken);
+        IOpenShiftConnection connection = new OpenShiftConnectionFactory().getAuthTokenConnection(OpenShiftUtils.CLIENT_NAME, authToken, OpenShiftUtils.LIBRA_SERVER);
         connection.getUser().getAuthorization().destroy();
         }catch(Exception ex){
            //ignore exception and logout

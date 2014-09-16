@@ -75,7 +75,7 @@ public class SystemAction extends ActionSupport implements ServletRequestAware {
         
 
         try {
-            IOpenShiftConnection connection = new OpenShiftConnectionFactory().getAuthTokenConnection(OpenShiftUtils.CLIENT_NAME, authToken);
+            IOpenShiftConnection connection = new OpenShiftConnectionFactory().getAuthTokenConnection(OpenShiftUtils.CLIENT_NAME, authToken, OpenShiftUtils.LIBRA_SERVER);
             IUser user = connection.getUser();
 
 
