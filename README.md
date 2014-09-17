@@ -11,7 +11,7 @@ Browser with Web Socket support
 http://caniuse.com/websockets
 
 
-Install and Run on OpenShift
+Install and Run with OpenShift Online
 ------
 Install with RHC
 
@@ -26,6 +26,13 @@ Members of the domain can login with their OpenShift account
 KeyBox will generate an SSH key pair and associate the public key with the user account for every login  (Login to "openshift.com", under "My Account" -> "Settings").
 
     KeyBox-Generated-keybox-<namespace>.rhcloud.com
+
+
+Alternate Installation with WildFly
+------
+Alternate Installation using the [WildFly Community Cartridge](https://github.com/openshift-cartridges/openshift-wildfly-cartridge)
+
+    rhc app create keybox https://cartreflect-claytondev.rhcloud.com/reflect?github=openshift-cartridges/openshift-wildfly-cartridge --from-code git://github.com/skavanagh/KeyBox-OpenShift.git
 
 
 Screenshots
