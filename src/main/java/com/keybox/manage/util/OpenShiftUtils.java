@@ -19,6 +19,7 @@ package com.keybox.manage.util;
 public class OpenShiftUtils {
 
     public static final String LIBRA_SERVER=System.getenv("OPENSHIFT_BROKER_HOST") != null ? System.getenv("OPENSHIFT_BROKER_HOST") : "openshift.redhat.com";
+    public static final String DATA_DIR=System.getenv("OPENSHIFT_DATA_DIR");
     public static final String APP_DNS=System.getenv("OPENSHIFT_APP_DNS");
     public static final String NAMESPACE=System.getenv("OPENSHIFT_NAMESPACE");
     public static final String APP_NAME=System.getenv("OPENSHIFT_APP_NAME");

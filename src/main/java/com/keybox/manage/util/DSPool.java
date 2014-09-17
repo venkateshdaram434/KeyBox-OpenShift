@@ -24,10 +24,6 @@ import org.apache.commons.pool.impl.GenericObjectPool;
  */
 public class DSPool {
 
-    //system path to the H2 DB
-    private static String DB_PATH = DBUtils.class.getClassLoader().getResource("keydb").getPath();
-
-
     private static PoolingDataSource dsPool;
 
 
@@ -58,7 +54,8 @@ public class DSPool {
         // create a database connection
         String user = "keybox";
         String password = "filepwd 45WJLnwhpA47EepT162hrVnDn3vYRvJhpZi0sVdvN9Sdsf";
-        String connectionURI = "jdbc:h2:" + DB_PATH + "/keybox;CIPHER=AES";
+        String connectionURI = "jdbc:h2:" + OpenShiftUtils.DATA_DIR + "keybox;CIPHER=AES";
+      
 
         String validationQuery = "select 1";
 
