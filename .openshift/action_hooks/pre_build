@@ -1,1 +1,0 @@
-mvn install:install-file -Dfile=$OPENSHIFT_HOMEDIR/app-root/runtime/repo/lib/openshift-java-client-2.7.0-SNAPSHOT.jar -DgroupId=com.openshift -DartifactId=openshift-java-client -Dversion=2.7.0-SNAPSHOT -Dpackaging=jar

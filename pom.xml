@@ -10,6 +10,12 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+    <repositories>
+        <repository>
+ 	  <id>jbosstools-snapshots</id>
+	  <url>https://repository.jboss.org/nexus/content/repositories/snapshots</url>
+        </repository>
+    </repositories>
     <dependencies>
         <dependency>
             <groupId>org.apache.struts</groupId>
@@ -41,11 +47,6 @@
             <artifactId>openshift-java-client</artifactId>
             <version>2.7.0-SNAPSHOT</version>
         </dependency>
-	<dependency>
-           <groupId>org.jboss</groupId>
-           <artifactId>jboss-dmr</artifactId>
-           <version>1.2.0.Final</version>
-        </dependency>
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
@@ -67,12 +68,6 @@
             <version>7.0.54</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>1.6.4</version>
-        </dependency>
-
     </dependencies>
 
     <build>
