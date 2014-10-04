@@ -18,6 +18,7 @@ package com.keybox.manage.db;
 import com.keybox.manage.model.HostSystem;
 import com.keybox.manage.model.SortedSet;
 import com.keybox.manage.util.DBUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -32,6 +33,10 @@ import java.util.Map;
  */
 public class SystemDB {
 
+    public static final String FILTER_BY_NAME = "app_nm";
+    public static final String FILTER_BY_GEAR_GROUP_NM = "gear_group_nm";
+    public static final String FILTER_BY_CARTRIDGE_NM = "cartridge_nm";
+
     public static final String SORT_BY_NAME = "app_nm";
     public static final String SORT_BY_USER = "user";
     public static final String SORT_BY_HOST = "host";
@@ -44,17 +49,16 @@ public class SystemDB {
      * method to do order by based on the sorted set object for systems
      *
      * @param sortedSet sorted set object
-     * @param filter    name value pair to filter by
      * @return sortedSet with list of host systems
      */
-    public static SortedSet getSystemSet(SortedSet sortedSet, Map<String, String> filter, Long userId) {
+    public static SortedSet getSystemSet(SortedSet sortedSet, Long userId) {
 
         Connection con = null;
 
         try {
             con = DBUtils.getConn();
 
-            sortedSet = getSystemSet(con, sortedSet, filter, userId);
+            sortedSet = getSystemSet(con, sortedSet, userId);
 
 
         } catch (Exception e) {
@@ -70,10 +74,9 @@ public class SystemDB {
      *
      * @param con DB Connection
      * @param sortedSet sorted set object
-     * @param filter    name value pair to filter by
      * @return sortedSet with list of host systems
      */
-    public static SortedSet getSystemSet(Connection con, SortedSet sortedSet, Map<String, String> filter, Long userId) {
+    public static SortedSet getSystemSet(Connection con, SortedSet sortedSet, Long userId) {
         List<HostSystem> hostSystemList = new ArrayList<HostSystem>();
 
         String orderBy = "";
@@ -83,9 +86,9 @@ public class SystemDB {
         String sql = "select * from  system where ";
 
         //append filter
-        for (Map.Entry<String, String> entry : filter.entrySet()) {
-            sql = sql + entry.getKey() + " like ? and ";
-        }
+        sql += StringUtils.isNotEmpty(sortedSet.getFilterMap().get(FILTER_BY_NAME)) ? FILTER_BY_NAME + " like ? and " : "";
+        sql += StringUtils.isNotEmpty(sortedSet.getFilterMap().get(FILTER_BY_GEAR_GROUP_NM)) ? FILTER_BY_GEAR_GROUP_NM + " like ? and " : "";
+        sql += StringUtils.isNotEmpty(sortedSet.getFilterMap().get(FILTER_BY_CARTRIDGE_NM)) ? FILTER_BY_CARTRIDGE_NM + " like ? and " : "";
 
         //append user id
         sql = sql + " user_id=? " + orderBy;
@@ -95,9 +98,16 @@ public class SystemDB {
 
             //set the values for the filter
             int i = 1;
-            for (Map.Entry<String, String> entry : filter.entrySet()) {
-                stmt.setString(i++, entry.getValue());
+            if(StringUtils.isNotEmpty(sortedSet.getFilterMap().get(FILTER_BY_NAME))){
+                stmt.setString(i++, sortedSet.getFilterMap().get(FILTER_BY_NAME));
             }
+            if(StringUtils.isNotEmpty(sortedSet.getFilterMap().get(FILTER_BY_GEAR_GROUP_NM))){
+                stmt.setString(i++, sortedSet.getFilterMap().get(FILTER_BY_GEAR_GROUP_NM));
+            }
+            if(StringUtils.isNotEmpty(sortedSet.getFilterMap().get(FILTER_BY_CARTRIDGE_NM))){
+                stmt.setString(i++, sortedSet.getFilterMap().get(FILTER_BY_CARTRIDGE_NM));
+            }
+           
             stmt.setLong(i, userId);
             ResultSet rs = stmt.executeQuery();
 

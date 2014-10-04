@@ -122,18 +122,18 @@
                         <s:hidden name="sortedSet.orderByField"/>
                         <table style="min-width:0px">
                             <tr>
-                                <td style="padding-left:0px;"><s:select name="appNm" class="view_frm_select"
+                                <td style="padding-left:0px;"><s:select name="sortedSet.filterMap['%{@com.keybox.manage.db.SystemDB@FILTER_BY_NAME}']" class="view_frm_select"
                                                                         list="appNmList"
                                                                         headerKey=""
                                                                         headerValue="-Select Application-"/>
                                 </td>
                                 <s:if test="showGears==true">
-                                    <td style="padding-left:0px;"><s:select name="cartridgeNm" class="view_frm_select"
+                                    <td style="padding-left:0px;"><s:select name="sortedSet.filterMap['%{@com.keybox.manage.db.SystemDB@FILTER_BY_CARTRIDGE_NM}']" class="view_frm_select"
                                                                             list="cartridgeNmList"
                                                                             headerKey=""
                                                                             headerValue="-Select Cartridge-"/>
                                     </td>
-                                    <td style="padding-left:0px;"><s:select name="gearGroupNm" class="view_frm_select"
+                                    <td style="padding-left:0px;"><s:select name="sortedSet.filterMap['%{@com.keybox.manage.db.SystemDB@FILTER_BY_GEAR_GROUP_NM}']" class="view_frm_select"
                                                                             list="gearGroupList"
                                                                             headerKey=""
                                                                             headerValue="-Select Gear Group-"/>

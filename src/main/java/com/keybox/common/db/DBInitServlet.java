@@ -47,10 +47,12 @@ public class DBInitServlet extends javax.servlet.http.HttpServlet {
 
         super.init(config);
 
-        //check if reset ssh application key is set
+
+        Connection connection = null;
+        Statement statement = null;
         try {
-            Connection connection = DBUtils.getConn();
-            Statement statement = connection.createStatement();
+            connection = DBUtils.getConn();
+            statement = connection.createStatement();
 
             ResultSet rs = statement.executeQuery("select * from information_schema.tables where upper(table_name) = 'USERS' and table_schema='PUBLIC'");
             if (rs == null || !rs.next()) {
@@ -62,15 +64,13 @@ public class DBInitServlet extends javax.servlet.http.HttpServlet {
 
             }
 
-
-
-            DBUtils.closeStmt(statement);
-            DBUtils.closeConn(connection);
-
+            DBUtils.closeRs(rs);
 
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        DBUtils.closeStmt(statement);
+        DBUtils.closeConn(connection);
     }
 
 }

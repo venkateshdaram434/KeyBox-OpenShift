@@ -52,9 +52,6 @@ public class SystemAction extends ActionSupport implements ServletRequestAware {
 
     boolean showGears = true;
 
-    String appNm;
-    String gearGroupNm;
-    String cartridgeNm;
 
     @Action(value = "/admin/setSystems",
             results = {
@@ -145,20 +142,8 @@ public class SystemAction extends ActionSupport implements ServletRequestAware {
 
         Long userId = AuthDB.getUserIdByAuthToken(AuthUtil.getAuthToken(servletRequest.getSession()));
 
-        //create filter for map
-        Map<String, String> filter = new LinkedHashMap<String, String>();
-        if (StringUtils.isNotEmpty(appNm)) {
-            filter.put("app_nm", appNm);
-        }
-        if (StringUtils.isNotEmpty(gearGroupNm)) {
-            filter.put("gear_group_nm", gearGroupNm);
-        }
-        if (StringUtils.isNotEmpty(cartridgeNm)) {
-            filter.put("cartridge_nm", cartridgeNm);
-        }
-
         Connection con = DBUtils.getConn();
-        sortedSet = SystemDB.getSystemSet(con, sortedSet, filter, userId);
+        sortedSet = SystemDB.getSystemSet(con, sortedSet, userId);
 
         appNmList = SystemDB.getAppNms(con, userId);
         gearGroupList = SystemDB.getGearNms(con, userId);
@@ -201,37 +186,12 @@ public class SystemAction extends ActionSupport implements ServletRequestAware {
         this.appNmList = appNmList;
     }
 
-    public String getAppNm() {
-        return appNm;
-    }
-
-    public void setAppNm(String appNm) {
-
-        this.appNm = appNm;
-    }
-
     public List<String> getGearGroupList() {
         return gearGroupList;
     }
 
     public void setGearGroupList(List<String> gearGroupList) {
         this.gearGroupList = gearGroupList;
-    }
-
-    public String getGearGroupNm() {
-        return gearGroupNm;
-    }
-
-    public void setGearGroupNm(String gearGroupNm) {
-        this.gearGroupNm = gearGroupNm;
-    }
-
-    public String getCartridgeNm() {
-        return cartridgeNm;
-    }
-
-    public void setCartridgeNm(String cartridgeNm) {
-        this.cartridgeNm = cartridgeNm;
     }
 
     public List<String> getCartridgeNmList() {
