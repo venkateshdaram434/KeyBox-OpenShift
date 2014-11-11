@@ -221,7 +221,7 @@ public class SSHUtil {
                 ((ChannelShell) channel).setAgentForwarding(true);    
             }
  	        //based on 80x24, 640x480
-            ((ChannelShell) channel).setPtyType("vt102",98,24,784,480);
+            ((ChannelShell) channel).setPtyType("xterm",98,24,784,480);
 
             InputStream outFromChannel = channel.getInputStream();
 

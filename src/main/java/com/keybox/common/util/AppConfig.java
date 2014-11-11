@@ -15,8 +15,6 @@
  */
 package com.keybox.common.util;
 
-import org.apache.commons.configuration.PropertiesConfiguration;
-import org.apache.commons.lang3.StringUtils;
 import java.util.*;
 
 /**
@@ -25,15 +23,8 @@ import java.util.*;
 public class AppConfig {
 
 
-    private static PropertiesConfiguration prop;
+    private static ResourceBundle prop= ResourceBundle.getBundle("KeyBoxConfig");
 
-    static {
-        try {
-            prop = new PropertiesConfiguration("KeyBoxConfig.properties");
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
 
     /**
      * gets the property from config
@@ -46,60 +37,7 @@ public class AppConfig {
         return prop.getString(name);
     }
 
-    /**
-     * gets the property from config and replaces placeholders
-     *
-     * @param name           property name
-     * @param replacementMap name value pairs of place holders to replace
-     * @return configuration property
-     */
-    public static String getProperty(String name, Map<String, String> replacementMap) {
 
-        String value = prop.getString(name);
-        if (StringUtils.isNotEmpty(value)) {
-            //iterate through map to replace text
-            Set<String> keySet = replacementMap.keySet();
-            for (String key : keySet) {
-                //replace values in string
-                String rVal = replacementMap.get(key);
-                value = value.replace("${" + key + "}", rVal);
-            }
-        }
-        return value;
-    }
-
-    /**
-     * removes property from the config
-     *
-     * @param name property name
-     */
-    public static void removeProperty(String name) {
-
-        //remove property
-        try {
-            prop.clearProperty(name);
-            prop.save();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    /**
-     * updates the property in the config
-     *
-     * @param name property name
-     * @param value property value
-     */
-    public static void updateProperty(String name, String value) {
-
-        //remove property
-        try {
-            prop.setProperty(name, value);
-            prop.save();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
 
 
 }

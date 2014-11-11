@@ -243,7 +243,12 @@ $(document).ready(function () {
 
     $(".output").each(function (index) {
         var id = $(this).attr("id").replace("output_", "");
-        termMap[id] = new Terminal(98, 24);
+        termMap[id] = new Terminal({cols: 98, rows: 24,
+            screenKeys: false,
+            useStyle: true,
+            cursorBlink: true,
+            convertEol: true
+        });
         termMap[id].open($(this));
     });
 
