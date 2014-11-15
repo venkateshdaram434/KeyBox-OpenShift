@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.keybox</groupId>
     <artifactId>keybox-openshift</artifactId>
-    <version>0.11.01</version>
+    <version>0.20.00</version>
     <packaging>war</packaging>
     <name>KeyBox-OpenShift</name>
     <properties>
@@ -51,6 +51,11 @@
             <groupId>commons-dbcp</groupId>
             <artifactId>commons-dbcp</artifactId>
             <version>1.4</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>core</artifactId>
+            <version>3.1.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tomcat</groupId>

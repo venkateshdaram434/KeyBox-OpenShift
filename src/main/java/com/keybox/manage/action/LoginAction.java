@@ -21,9 +21,11 @@ import com.keybox.manage.db.AuthDB;
 import com.keybox.manage.db.PrivateKeyDB;
 import com.keybox.manage.model.ApplicationKey;
 import com.keybox.manage.model.Auth;
+import com.keybox.manage.util.OTPUtil;
 import com.keybox.manage.util.OpenShiftUtils;
 import com.openshift.client.*;
 import com.opensymphony.xwork2.ActionSupport;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.interceptor.ServletRequestAware;
@@ -31,6 +33,7 @@ import org.apache.struts2.interceptor.ServletResponseAware;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 
 /**
@@ -41,8 +44,10 @@ public class LoginAction extends ActionSupport implements ServletRequestAware, S
     HttpServletResponse servletResponse;
     HttpServletRequest servletRequest;
     Auth auth;
+    //check if otp is enabled
+    boolean otpEnabled="true".equals(AppConfig.getProperty("enableOTP"));
 
-    private static final String generatedKeyNm = AppConfig.getProperty("generatedKeyNm") + "-"+ OpenShiftUtils.APP_DNS;
+    private static final String generatedKeyNm = AppConfig.getProperty("generatedKeyNm") + "-" + OpenShiftUtils.APP_DNS;
 
     @Action(value = "/login",
             results = {
@@ -57,36 +62,43 @@ public class LoginAction extends ActionSupport implements ServletRequestAware, S
     @Action(value = "/loginSubmit",
             results = {
                     @Result(name = "input", location = "/login.jsp"),
+                    @Result(name = "otp", location = "/admin/viewOTP.action", type = "redirect"),
                     @Result(name = "success", location = "/admin/setSystems.action", type = "redirect")
             }
     )
     public String loginSubmit() {
-        String retVal = SUCCESS;
 
 
-        String authToken = null;
+        String sharedSecret = null;
         try {
             IOpenShiftConnection connection = new OpenShiftConnectionFactory().getConnection(OpenShiftUtils.CLIENT_NAME, auth.getUsername(), auth.getPassword(), OpenShiftUtils.LIBRA_SERVER);
 
             IUser user = connection.getUser();
 
             //if user is not apart of domain return
-            if(!user.hasDomain(OpenShiftUtils.NAMESPACE)){
+            if (!user.hasDomain(OpenShiftUtils.NAMESPACE)) {
                 addActionError("User is not associated with domain");
                 return INPUT;
             }
 
             //set auth token
-            auth.setAuthToken(user.createAuthorization(OpenShiftUtils.APP_DNS, "session", 60*60*24).getToken());
+            auth.setAuthToken(user.createAuthorization(OpenShiftUtils.APP_DNS, "session", 60 * 60 * 24).getToken());
             auth.setOpenshiftId(user.getId());
 
-            authToken = AuthDB.login(auth);
+            //check OTP token
+            if (otpEnabled) {
+                //get shared secret
+                sharedSecret = AuthDB.getSharedSecret(auth.getOpenshiftId());
+                if (auth.getOtpToken() == null || (StringUtils.isNotEmpty(sharedSecret) && !OTPUtil.verifyToken(sharedSecret, auth.getOtpToken()))) {
+                    addFieldError("auth.otpToken", "Invalid");
+                    return INPUT;
+                }
+            }
 
-            //get userId for auth token
-            Long userId = AuthDB.getUserIdByAuthToken(authToken);
+            auth = AuthDB.setAuth(auth);
 
             //add generated public key
-            ApplicationKey appKey = PrivateKeyDB.createApplicationKey(userId);
+            ApplicationKey appKey = PrivateKeyDB.createApplicationKey(auth.getId());
 
             //set public key
             String publicKey = appKey.getPublicKey().split(" ")[1];
@@ -95,26 +107,26 @@ public class LoginAction extends ActionSupport implements ServletRequestAware, S
             //check to see if key exists and matches
             ISSHPublicKey existingKey = user.getSSHKeyByName(generatedKeyNm);
             if (existingKey == null || !publicKey.equals(existingKey.getPublicKey())) {
-                user.deleteKey(generatedKeyNm);
+                user.removeSSHKey(generatedKeyNm);
                 appKey.setPublicKey(publicKey);
-                user.putSSHKey(generatedKeyNm, appKey);
+                user.addSSHKey(generatedKeyNm, appKey);
             }
 
-        } catch (OpenShiftEndpointException ex) {
-            ex.printStackTrace();
-        }
-
-
-        if (authToken != null) {
-            AuthUtil.setAuthToken(servletRequest.getSession(), authToken);
+            AuthUtil.setAuthToken(servletRequest.getSession(), auth.getAuthToken());
             AuthUtil.setTimeout(servletRequest.getSession());
-        } else {
+
+        } catch (OpenShiftException ex) {
+            ex.printStackTrace();
             addActionError("Invalid username and password combination");
-            retVal = INPUT;
+            return INPUT;
         }
 
+        //for first time login redirect to set OTP
+        if (otpEnabled && StringUtils.isEmpty(sharedSecret)) {
+            return "otp";
+        }
 
-        return retVal;
+        return SUCCESS;
     }
 
     @Action(value = "/logout",
@@ -124,14 +136,15 @@ public class LoginAction extends ActionSupport implements ServletRequestAware, S
     )
     public String logout() {
 
-        try{
-        String authToken = AuthUtil.getAuthToken(servletRequest.getSession());
-        IOpenShiftConnection connection = new OpenShiftConnectionFactory().getAuthTokenConnection(OpenShiftUtils.CLIENT_NAME, authToken, OpenShiftUtils.LIBRA_SERVER);
-        connection.getUser().getAuthorization().destroy();
-        } catch(OpenShiftEndpointException ex){
+        try {
+            String authToken = AuthUtil.getAuthToken(servletRequest.getSession());
+            IOpenShiftConnection connection = new OpenShiftConnectionFactory().getAuthTokenConnection(OpenShiftUtils.CLIENT_NAME, authToken, OpenShiftUtils.LIBRA_SERVER);
+            connection.getUser().getAuthorization().destroy();
+        } catch (OpenShiftException ex) {
             ex.printStackTrace();
         }
         AuthUtil.deleteAllSession(servletRequest.getSession());
+
         return SUCCESS;
     }
 
@@ -175,5 +188,17 @@ public class LoginAction extends ActionSupport implements ServletRequestAware, S
 
     public void setServletRequest(HttpServletRequest servletRequest) {
         this.servletRequest = servletRequest;
+    }
+
+    public boolean isOtpEnabled() {
+        return otpEnabled;
+    }
+
+    public boolean getOtpEnabled() {
+        return otpEnabled;
+    }
+
+    public void setOtpEnabled(boolean otpEnabled) {
+        this.otpEnabled = otpEnabled;
     }
 }

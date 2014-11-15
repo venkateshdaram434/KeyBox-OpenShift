@@ -57,7 +57,7 @@ public class DBInitServlet extends javax.servlet.http.HttpServlet {
             ResultSet rs = statement.executeQuery("select * from information_schema.tables where upper(table_name) = 'USERS' and table_schema='PUBLIC'");
             if (rs == null || !rs.next()) {
 
-                statement.executeUpdate("create table if not exists users (id INTEGER PRIMARY KEY AUTO_INCREMENT,  openshift_id varchar not null, auth_token varchar)");
+                statement.executeUpdate("create table if not exists users (id INTEGER PRIMARY KEY AUTO_INCREMENT,  openshift_id varchar not null, auth_token varchar, otp_secret varchar)");
                 statement.executeUpdate("create table if not exists system (id INTEGER PRIMARY KEY AUTO_INCREMENT, app_nm varchar, user varchar not null, host varchar not null, port INTEGER not null, domain varchar not null, gear_group_nm varchar, cartridge_nm varchar, user_id INTEGER, foreign key (user_id) references users(id) on delete cascade )");
                 statement.executeUpdate("create table if not exists application_key (id INTEGER PRIMARY KEY AUTO_INCREMENT, public_key varchar not null, private_key varchar not null, passphrase varchar, key_type varchar, user_id INTEGER, foreign key (user_id) references users(id) on delete cascade )");
                 statement.executeUpdate("create table if not exists status (id INTEGER, user_id INTEGER, status_cd varchar not null default 'INITIAL', primary key (id, user_id), foreign key (id) references system(id) on delete cascade, foreign key (user_id) references users(id) on delete cascade)");

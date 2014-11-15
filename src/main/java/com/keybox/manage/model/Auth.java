@@ -26,6 +26,8 @@ public class Auth {
     String password;
     String authToken;
     String openshiftId;
+    String otpSecret;
+    Long otpToken;
 
 
     public String getUsername() {
@@ -61,12 +63,28 @@ public class Auth {
         this.id = id;
     }
 
-
     public String getOpenshiftId() {
         return openshiftId;
     }
 
     public void setOpenshiftId(String openshiftId) {
+
         this.openshiftId = openshiftId;
+    }
+
+    public String getOtpSecret() {
+        return otpSecret;
+    }
+
+    public void setOtpSecret(String otpSecret) {
+        this.otpSecret = otpSecret;
+    }
+
+    public Long getOtpToken() {
+        return otpToken;
+    }
+
+    public void setOtpToken(Long otpToken) {
+        this.otpToken = otpToken;
     }
 }

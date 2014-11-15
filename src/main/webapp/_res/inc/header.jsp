@@ -23,7 +23,6 @@
 <script src="<%= request.getContextPath() %>/_res/js/tty/term.js"></script>
 <script src="<%= request.getContextPath() %>/_res/js/bootstrap.js"></script>
 
-<link rel="stylesheet" href="<%= request.getContextPath() %>/_res/css/jquery-ui/base/jquery-ui.css"/>
 <link rel="stylesheet" href="<%= request.getContextPath() %>/_res/css/bootstrap.css"/>
 <link rel="stylesheet" type="text/css" href="<%= request.getContextPath() %>/_res/css/keybox.css"/>
 <link rel="icon" href="<%= request.getContextPath() %>/img/keybox.ico" type="image/x-icon"/>

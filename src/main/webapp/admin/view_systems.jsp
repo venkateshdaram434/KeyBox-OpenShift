@@ -22,16 +22,6 @@
     <jsp:include page="../_res/inc/header.jsp"/>
     <script type="text/javascript">
         $(document).ready(function () {
-            $("#script_dia").dialog({
-                autoOpen: false,
-                height: 350,
-                width: 350,
-                modal: true,
-                open: function (event, ui) {
-                    $(".ui-dialog-titlebar-close").show();
-                }
-            });
-
 
             $("#view_btn").button().click(function () {
                 $("#viewSystems").submit();
@@ -43,9 +33,9 @@
             //select all check boxes
             $("#select_frm_systemSelectAll").click(function () {
                 if ($(this).is(':checked')) {
-                    $(".systemSelect").attr('checked', true);
+                    $(".systemSelect").prop('checked', true);
                 } else {
-                    $(".systemSelect").attr('checked', false);
+                    $(".systemSelect").prop('checked', false);
                 }
             });
             $(".sort,.sortAsc,.sortDesc").click(function () {
@@ -71,18 +61,7 @@
             $(".scrollableTable tr:odd").css("background-color", "#e0e0e0");
         });
     </script>
-    <s:if test="fieldErrors.size > 0">
-        <script type="text/javascript">
-            $(document).ready(function () {
-                <s:if test="hostSystem.id>0">
-                $("#edit_dialog_<s:property value="hostSystem.id"/>").dialog("open");
-                </s:if>
-                <s:else>
-                $("#add_dialog").dialog("open");
-                </s:else>
-            });
-        </script>
-    </s:if>
+
 
     <title>KeyBox - Manage Systems</title>
 </head>

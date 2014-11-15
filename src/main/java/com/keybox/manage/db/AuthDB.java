@@ -15,13 +15,16 @@
  */
 package com.keybox.manage.db;
 
+import com.keybox.common.util.AppConfig;
 import com.keybox.manage.model.Auth;
 import com.keybox.manage.util.DBUtils;
+import com.keybox.manage.util.OTPUtil;
 import org.apache.commons.lang3.StringUtils;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 
 /**
  * DAO to login administrative users
@@ -29,24 +32,25 @@ import java.sql.ResultSet;
 public class AuthDB {
 
     /**
-     * auth user and return auth token if valid auth
+     * auth user and return auth object with user id
      *
      * @param auth user object
-     * @return auth token if success
+     * @return auth user object if success
      */
-    public static String login(Auth auth) {
+    public static Auth setAuth(Auth auth) {
 
         Connection con = null;
         try {
             con = DBUtils.getConn();
 
-            Long userId= getUserIdByOpenShiftId(con, auth.getOpenshiftId());
+            Auth user = getUserByOpenShiftId(con, auth.getOpenshiftId());
 
-            if (userId!= null) {
-                auth.setId(userId);
+            if (user != null && user.getId() != null) {
+                auth.setId(user.getId());
+                auth.setOtpSecret(user.getOtpSecret());
                 updateLogin(con, auth);
             } else {
-                insertLogin(con,auth);
+                auth.setId(insertLogin(con, auth));
             }
 
 
@@ -56,10 +60,10 @@ public class AuthDB {
         DBUtils.closeConn(con);
 
 
-        return auth.getAuthToken();
+        return auth;
+
 
     }
-
 
     /**
      * checks to see if user is an admin based on auth token
@@ -98,6 +102,8 @@ public class AuthDB {
 
     }
 
+
+
     /**
      * updates the admin table based on auth id
      *
@@ -108,10 +114,11 @@ public class AuthDB {
 
 
         try {
-            PreparedStatement stmt = con.prepareStatement("update users set openshift_id=?, auth_token=? where id=?");
+            PreparedStatement stmt = con.prepareStatement("update users set openshift_id=?, auth_token=?, otp_secret=? where id=?");
             stmt.setString(1, auth.getOpenshiftId());
             stmt.setString(2, auth.getAuthToken());
-            stmt.setLong(3, auth.getId());
+            stmt.setString(3, auth.getOtpSecret());
+            stmt.setLong(4, auth.getId());
             stmt.execute();
 
             DBUtils.closeStmt(stmt);
@@ -129,21 +136,28 @@ public class AuthDB {
      * @param con  DB connection
      * @param auth user object
      */
-    private static void insertLogin(Connection con, Auth auth) {
+    private static Long insertLogin(Connection con, Auth auth) {
 
+       Long id=null;
 
         try {
-            PreparedStatement stmt = con.prepareStatement("insert into users (openshift_id, auth_token) values (?,?)");
+            PreparedStatement stmt = con.prepareStatement("insert into users (openshift_id, auth_token, otp_secret) values (?,?,?)", Statement.RETURN_GENERATED_KEYS);
             stmt.setString(1, auth.getOpenshiftId());
             stmt.setString(2, auth.getAuthToken());
+            stmt.setString(3, auth.getOtpSecret());
             stmt.execute();
 
+            ResultSet rs = stmt.getGeneratedKeys();
+            if (rs != null && rs.next()) {
+                id= rs.getLong(1);
+            }
             DBUtils.closeStmt(stmt);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
+        return id;
 
     }
 
@@ -203,12 +217,12 @@ public class AuthDB {
     /**
      * returns auth object based on openshift id
      *
-     * @param con      DB connection
+     * @param con         DB connection
      * @param openShiftId user openshift id
      * @return auth object
      */
-    public static Long getUserIdByOpenShiftId(Connection con, String openShiftId) {
-        Long userId = null;
+    public static Auth getUserByOpenShiftId(Connection con, String openShiftId) {
+        Auth user = null;
         try {
             if (StringUtils.isNotEmpty(openShiftId)) {
 
@@ -217,7 +231,11 @@ public class AuthDB {
                 ResultSet rs = stmt.executeQuery();
 
                 while (rs.next()) {
-                    userId=rs.getLong("id");
+                    user = new Auth();
+                    user.setId(rs.getLong("id"));
+                    user.setAuthToken(rs.getString("auth_token"));
+                    user.setOpenshiftId(rs.getString("openshift_id"));
+                    user.setOtpSecret(rs.getString("otp_secret"));
 
                 }
                 DBUtils.closeRs(rs);
@@ -228,16 +246,69 @@ public class AuthDB {
             e.printStackTrace();
         }
 
-        return userId;
+        return user;
 
     }
 
 
     /**
+     * returns the shared secret based on openshift id
+     *
+     * @param  openshiftId openshift id
+     * @return auth object
+     */
+    public static String getSharedSecret(String openshiftId) {
+
+        String sharedSecret = null;
+        Connection con = null;
+        try {
+            con = DBUtils.getConn();
+            PreparedStatement stmt = con.prepareStatement("select * from users where openshift_id like ?");
+            stmt.setString(1, openshiftId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                sharedSecret = rs.getString("otp_secret");
+            }
+            DBUtils.closeRs(rs);
+            DBUtils.closeStmt(stmt);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        DBUtils.closeConn(con);
+
+        return sharedSecret;
+
+    }
+
+    /**
+     * updates shared secret based on auth token
+     *
+     * @param secret OTP shared secret
+     * @param authToken auth token
+     */
+    public static void updateSharedSecret(String secret, String authToken) {
+
+        Connection con = null;
+        try {
+            con = DBUtils.getConn();
+            PreparedStatement stmt = con.prepareStatement("update users set otp_secret=? where auth_token=?");
+            stmt.setString(1, secret);
+            stmt.setString(2, authToken);
+            stmt.execute();
+            DBUtils.closeStmt(stmt);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        DBUtils.closeConn(con);
+
+    }
+
+    /**
      * returns auth user object based on auth token
      *
-     * @param con       DB connection
-     * @return Auth user object
+     * @param con DB connection
      * @return user id
      */
     public static Auth getUserByAuthToken(Connection con, String authToken) {
@@ -253,6 +324,7 @@ public class AuthDB {
                 user.setId(rs.getLong("id"));
                 user.setAuthToken(rs.getString("auth_token"));
                 user.setOpenshiftId(rs.getString("openshift_id"));
+                user.setOtpSecret(rs.getString("otp_secret"));
             }
             DBUtils.closeRs(rs);
             DBUtils.closeStmt(stmt);
