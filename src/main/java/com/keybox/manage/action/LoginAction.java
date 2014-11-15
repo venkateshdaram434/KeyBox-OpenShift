@@ -89,7 +89,7 @@ public class LoginAction extends ActionSupport implements ServletRequestAware, S
             if (otpEnabled) {
                 //get shared secret
                 sharedSecret = AuthDB.getSharedSecret(auth.getOpenshiftId());
-                if (auth.getOtpToken() == null || (StringUtils.isNotEmpty(sharedSecret) && !OTPUtil.verifyToken(sharedSecret, auth.getOtpToken()))) {
+                if (StringUtils.isNotEmpty(sharedSecret) && (auth.getOtpToken() == null || !OTPUtil.verifyToken(sharedSecret, auth.getOtpToken()))) {
                     addFieldError("auth.otpToken", "Invalid");
                     return INPUT;
                 }
