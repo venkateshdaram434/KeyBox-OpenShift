@@ -10,12 +10,12 @@ https://www.openshift.com/developers/rhc-client-tools-install
 Browser with Web Socket support
 http://caniuse.com/websockets
 
-FreeOTP to enable two-factor authentication with Andorid or iOS
+[FreeOTP](https://fedorahosted.org/freeotp) to enable two-factor authentication with Android or iOS
 
-| Platform      | Link                                                                                    |
-| ------------- |:---------------------------------------------------------------------------------------:|
-| Android       | [Google Play](https://play.google.com/store/apps/details?id=org.fedorahosted.freeotp)   |
-| iOS           | [iTunes](https://itunes.apple.com/us/app/freeotp/id872559395)                           |
+| FreeOTP      | Link                                                                                 |
+|:------------- |:------------------------------------------------------------------------------------:|
+| Android       | [Google Play](https://play.google.com/store/apps/details?id=org.fedorahosted.freeotp)|
+| iOS           | [iTunes](https://itunes.apple.com/us/app/freeotp/id872559395)                        |
 
 Install and Run with OpenShift Online
 ------
