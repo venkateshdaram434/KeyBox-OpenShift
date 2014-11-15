@@ -215,7 +215,7 @@
             $(".output").each(function (index) {
                 var id = $(this).attr("id").replace("output_", "");
                 termMap[id] = new Terminal({
-                    cols: 80, rows: 24,
+                    cols: 98, rows: 24,
                     screenKeys: false,
                     useStyle: true,
                     cursorBlink: true,
