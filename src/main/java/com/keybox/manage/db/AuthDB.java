@@ -15,10 +15,8 @@
  */
 package com.keybox.manage.db;
 
-import com.keybox.common.util.AppConfig;
 import com.keybox.manage.model.Auth;
 import com.keybox.manage.util.DBUtils;
-import com.keybox.manage.util.OTPUtil;
 import org.apache.commons.lang3.StringUtils;
 
 import java.sql.Connection;

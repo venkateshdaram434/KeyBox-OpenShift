@@ -15,7 +15,6 @@
  */
 package com.keybox.manage.util;
 
-import com.keybox.common.util.AppConfig;
 import com.keybox.manage.model.SessionOutput;
 import com.keybox.manage.model.UserSessionsOutput;
 import org.apache.commons.lang3.StringUtils;
