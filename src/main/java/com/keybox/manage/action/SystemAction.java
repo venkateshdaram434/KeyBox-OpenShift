@@ -31,6 +31,7 @@ import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.interceptor.ServletRequestAware;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
@@ -70,7 +71,8 @@ public class SystemAction extends ActionSupport implements ServletRequestAware {
         
 
         try {
-            IOpenShiftConnection connection = new OpenShiftConnectionFactory().getAuthTokenConnection(OpenShiftUtils.CLIENT_NAME, authToken, OpenShiftUtils.LIBRA_SERVER);
+
+            IOpenShiftConnection connection = new ConnectionBuilder(OpenShiftUtils.LIBRA_SERVER).token(authToken).create();
             IUser user = connection.getUser();
 
 
@@ -122,7 +124,7 @@ public class SystemAction extends ActionSupport implements ServletRequestAware {
             SystemDB.setSystem(hostSystemList, userId);
             retVal = viewAdminSystems();
             
-        } catch (OpenShiftEndpointException ex) {
+        } catch (IOException ex) {
             ex.printStackTrace();
             retVal = ERROR;
         }

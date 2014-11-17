@@ -23,8 +23,8 @@ import com.keybox.common.util.AuthUtil;
 import com.keybox.manage.db.AuthDB;
 import com.keybox.manage.util.OTPUtil;
 import com.keybox.manage.util.OpenShiftUtils;
+import com.openshift.client.ConnectionBuilder;
 import com.openshift.client.IOpenShiftConnection;
-import com.openshift.client.OpenShiftConnectionFactory;
 import com.opensymphony.xwork2.ActionSupport;
 import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.Result;
@@ -36,6 +36,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.Date;
 import java.util.Hashtable;
 
@@ -73,7 +74,7 @@ public class OTPAction extends ActionSupport implements ServletRequestAware, Ser
 
         String sharedSecret = AuthUtil.getOTPSecret(servletRequest.getSession());
 
-        AuthDB.updateSharedSecret(sharedSecret,AuthUtil.getAuthToken(servletRequest.getSession()));
+        AuthDB.updateSharedSecret(sharedSecret, AuthUtil.getAuthToken(servletRequest.getSession()));
 
         return SUCCESS;
 
@@ -84,13 +85,16 @@ public class OTPAction extends ActionSupport implements ServletRequestAware, Ser
     public String qrImage() {
 
         String authToken = AuthUtil.getAuthToken(servletRequest.getSession());
-        IOpenShiftConnection connection = new OpenShiftConnectionFactory().getAuthTokenConnection(OpenShiftUtils.CLIENT_NAME, authToken, OpenShiftUtils.LIBRA_SERVER);
-
-        String secret= OTPUtil.generateSecret();
-
+        String rhLogin = "";
+        try {
+            IOpenShiftConnection connection = new ConnectionBuilder(OpenShiftUtils.LIBRA_SERVER).token(authToken).create();
+            rhLogin = connection.getUser().getRhlogin();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        String secret = OTPUtil.generateSecret();
         AuthUtil.setOTPSecret(servletRequest.getSession(), secret);
-
-        String qrCodeText = "otpauth://totp/" + OpenShiftUtils.APP_DNS + ":" + connection.getUser().getRhlogin() + "?secret=" + secret;
+        String qrCodeText = "otpauth://totp/" + OpenShiftUtils.APP_DNS + ":" + rhLogin + "?secret=" + secret;
 
 
         QRCodeWriter qrWriter = new QRCodeWriter();
@@ -123,7 +127,6 @@ public class OTPAction extends ActionSupport implements ServletRequestAware, Ser
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-
 
 
         return null;

@@ -33,6 +33,7 @@ import org.apache.struts2.interceptor.ServletResponseAware;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 
 /**
@@ -70,7 +71,8 @@ public class LoginAction extends ActionSupport implements ServletRequestAware, S
 
         String sharedSecret = null;
         try {
-            IOpenShiftConnection connection = new OpenShiftConnectionFactory().getConnection(OpenShiftUtils.CLIENT_NAME, auth.getUsername(), auth.getPassword(), OpenShiftUtils.LIBRA_SERVER);
+
+            IOpenShiftConnection connection = new ConnectionBuilder(OpenShiftUtils.LIBRA_SERVER).credentials(auth.getUsername(), auth.getPassword()).create();
 
             IUser user = connection.getUser();
 
@@ -114,7 +116,7 @@ public class LoginAction extends ActionSupport implements ServletRequestAware, S
             AuthUtil.setAuthToken(servletRequest.getSession(), auth.getAuthToken());
             AuthUtil.setTimeout(servletRequest.getSession());
 
-        } catch (OpenShiftException ex) {
+        } catch (IOException ex) {
             ex.printStackTrace();
             addActionError("Invalid username and password combination");
             return INPUT;
@@ -137,9 +139,9 @@ public class LoginAction extends ActionSupport implements ServletRequestAware, S
 
         try {
             String authToken = AuthUtil.getAuthToken(servletRequest.getSession());
-            IOpenShiftConnection connection = new OpenShiftConnectionFactory().getAuthTokenConnection(OpenShiftUtils.CLIENT_NAME, authToken, OpenShiftUtils.LIBRA_SERVER);
+            IOpenShiftConnection connection = new ConnectionBuilder(OpenShiftUtils.LIBRA_SERVER).token(authToken).create();
             connection.getUser().getAuthorization().destroy();
-        } catch (OpenShiftException ex) {
+        } catch (IOException ex) {
             ex.printStackTrace();
         }
         AuthUtil.deleteAllSession(servletRequest.getSession());
