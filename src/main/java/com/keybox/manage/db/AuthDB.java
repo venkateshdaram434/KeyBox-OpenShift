@@ -17,6 +17,7 @@ package com.keybox.manage.db;
 
 import com.keybox.manage.model.Auth;
 import com.keybox.manage.util.DBUtils;
+import com.keybox.manage.util.EncryptionUtil;
 import org.apache.commons.lang3.StringUtils;
 
 import java.sql.Connection;
@@ -45,7 +46,6 @@ public class AuthDB {
 
             if (user != null && user.getId() != null) {
                 auth.setId(user.getId());
-                auth.setOtpSecret(user.getOtpSecret());
                 updateLogin(con, auth);
             } else {
                 auth.setId(insertLogin(con, auth));
@@ -112,11 +112,10 @@ public class AuthDB {
 
 
         try {
-            PreparedStatement stmt = con.prepareStatement("update users set openshift_id=?, auth_token=?, otp_secret=? where id=?");
+            PreparedStatement stmt = con.prepareStatement("update users set openshift_id=?, auth_token=? where id=?");
             stmt.setString(1, auth.getOpenshiftId());
             stmt.setString(2, auth.getAuthToken());
-            stmt.setString(3, auth.getOtpSecret());
-            stmt.setLong(4, auth.getId());
+            stmt.setLong(3, auth.getId());
             stmt.execute();
 
             DBUtils.closeStmt(stmt);
@@ -139,10 +138,9 @@ public class AuthDB {
        Long id=null;
 
         try {
-            PreparedStatement stmt = con.prepareStatement("insert into users (openshift_id, auth_token, otp_secret) values (?,?,?)", Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement stmt = con.prepareStatement("insert into users (openshift_id, auth_token) values (?,?)", Statement.RETURN_GENERATED_KEYS);
             stmt.setString(1, auth.getOpenshiftId());
             stmt.setString(2, auth.getAuthToken());
-            stmt.setString(3, auth.getOtpSecret());
             stmt.execute();
 
             ResultSet rs = stmt.getGeneratedKeys();
@@ -233,8 +231,6 @@ public class AuthDB {
                     user.setId(rs.getLong("id"));
                     user.setAuthToken(rs.getString("auth_token"));
                     user.setOpenshiftId(rs.getString("openshift_id"));
-                    user.setOtpSecret(rs.getString("otp_secret"));
-
                 }
                 DBUtils.closeRs(rs);
                 DBUtils.closeStmt(stmt);
@@ -265,7 +261,7 @@ public class AuthDB {
             stmt.setString(1, openshiftId);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                sharedSecret = rs.getString("otp_secret");
+                sharedSecret = EncryptionUtil.decrypt(rs.getString("otp_secret"));
             }
             DBUtils.closeRs(rs);
             DBUtils.closeStmt(stmt);
@@ -291,7 +287,7 @@ public class AuthDB {
         try {
             con = DBUtils.getConn();
             PreparedStatement stmt = con.prepareStatement("update users set otp_secret=? where auth_token=?");
-            stmt.setString(1, secret);
+            stmt.setString(1, EncryptionUtil.encrypt(secret));
             stmt.setString(2, authToken);
             stmt.execute();
             DBUtils.closeStmt(stmt);
@@ -322,7 +318,6 @@ public class AuthDB {
                 user.setId(rs.getLong("id"));
                 user.setAuthToken(rs.getString("auth_token"));
                 user.setOpenshiftId(rs.getString("openshift_id"));
-                user.setOtpSecret(rs.getString("otp_secret"));
             }
             DBUtils.closeRs(rs);
             DBUtils.closeStmt(stmt);
