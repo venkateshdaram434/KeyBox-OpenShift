@@ -64,7 +64,7 @@
         </div>
         <div class="col-md-5">
             <p>
-                Add the QR Code using <a href="https://fedorahosted.org/freeotp" target="_blank">FreeOTP</a> on your Android or iOS device to setup two-factor authentication.
+                Scan the QR Code using <a href="https://fedorahosted.org/freeotp" target="_blank">FreeOTP</a> on your Android or iOS device to setup two-factor authentication.
             <table class="table table-striped table-hover ">
                 <thead>
                 <tr>
