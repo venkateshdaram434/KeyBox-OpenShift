@@ -26,15 +26,16 @@ table tbody {
     padding: 10px 2px 2px 0px;
     float: right;
 }
-.wwFormTable {
+
+form table {
     background-color: #FFFFFF;
     min-width:10px;
 }
 
-.wwFormTable input {
+form table input {
     padding: 2px;
 }
-.wwFormTable td {
+form table td, form table th {
     padding: 5px;
 }
 
