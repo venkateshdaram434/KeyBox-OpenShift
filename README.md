@@ -12,7 +12,7 @@ http://caniuse.com/websockets
 
 Install [FreeOTP](https://fedorahosted.org/freeotp) to enable two-factor authentication with Android or iOS
 
-| FreeOTP      | Link                                                                                 |
+| FreeOTP       | Link                                                                                 |
 |:------------- |:------------------------------------------------------------------------------------:|
 | Android       | [Google Play](https://play.google.com/store/apps/details?id=org.fedorahosted.freeotp)|
 | iOS           | [iTunes](https://itunes.apple.com/us/app/freeotp/id872559395)                        |
