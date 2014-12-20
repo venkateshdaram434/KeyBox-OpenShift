@@ -106,6 +106,11 @@
                                                                         headerKey=""
                                                                         headerValue="-Select Application-"/>
                                 </td>
+                                <td style="padding-left:0px;"><s:select name="sortedSet.filterMap['%{@com.keybox.manage.db.SystemDB@FILTER_BY_DOMAIN}']" class="view_frm_select"
+                                                                        list="domainList"
+                                                                        headerKey=""
+                                                                        headerValue="-Select Domain-"/>
+                                </td>
                                 <s:if test="showGears==true">
                                     <td style="padding-left:0px;"><s:select name="sortedSet.filterMap['%{@com.keybox.manage.db.SystemDB@FILTER_BY_CARTRIDGE_NM}']" class="view_frm_select"
                                                                             list="cartridgeNmList"
@@ -133,7 +138,7 @@
     <s:if test="sortedSet.itemList!= null && !sortedSet.itemList.isEmpty()">
 
         <s:form action="selectSystemsForCompositeTerms" id="select_frm" theme="simple">
-            <table class="table-striped scrollableTable">
+            <table class="table-striped scrollableTable" style="min-width:80%">
                 <thead>
 
                 <tr>
@@ -144,6 +149,8 @@
                     <th id="<s:property value="@com.keybox.manage.db.SystemDB@SORT_BY_USER"/>" class="sort">User
                     </th>
                     <th id="<s:property value="@com.keybox.manage.db.SystemDB@SORT_BY_HOST"/>" class="sort">Host
+                    </th>
+                    <th id="<s:property value="@com.keybox.manage.db.SystemDB@SORT_BY_DOMAIN"/>" class="sort">Domain
                     </th>
                     <s:if test="showGears==true">
                         <th id="<s:property value="@com.keybox.manage.db.SystemDB@SORT_BY_CARTRIDGE_NM"/>"
@@ -170,6 +177,7 @@
                         </td>
                         <td><s:property value="user"/></td>
                         <td><s:property value="host"/></td>
+                        <td><s:property value="domain"/></td>
                         <s:if test="showGears==true">
                             <td><s:property value="cartridgeNm"/></td>
                             <td><s:property value="gearGroupNm"/></td>

@@ -48,6 +48,7 @@ public class SystemAction extends ActionSupport implements ServletRequestAware {
     List<String> appNmList = new ArrayList();
     List<String> gearGroupList = new ArrayList();
     List<String> cartridgeNmList = new ArrayList();
+    List<String> domainList = new ArrayList();
 
     boolean showGears = true;
 
@@ -75,51 +76,51 @@ public class SystemAction extends ActionSupport implements ServletRequestAware {
             IOpenShiftConnection connection = new ConnectionBuilder(OpenShiftUtils.LIBRA_SERVER).token(authToken).create();
             IUser user = connection.getUser();
 
+            for(IDomain domain : user.getDomains()) {
+                for (IApplication app : domain.getApplications()) {
 
-            IDomain domain = user.getDomain(OpenShiftUtils.NAMESPACE);
-            for (IApplication app : domain.getApplications()) {
-
-                //show all gears
-                if (showGears) {
-                    for (IGearGroup gearGroup : app.getGearGroups()) {
-                        List<String> cartridgeNmList = new ArrayList<>();
-                        for(ICartridge cartridge : gearGroup.getCartridges()){
+                    //show all gears
+                    if (showGears) {
+                        for (IGearGroup gearGroup : app.getGearGroups()) {
+                            List<String> cartridgeNmList = new ArrayList<>();
+                            for (ICartridge cartridge : gearGroup.getCartridges()) {
                                 cartridgeNmList.add(cartridge.getName());
-                        }
-                        for (IGear gear : gearGroup.getGears()) {
-                            if (StringUtils.isNotEmpty(gear.getSshUrl())) {
-                                String sshUrl = gear.getSshUrl().replaceAll("ssh://", "");
-
-                                HostSystem hostSystem = new HostSystem();
-                                hostSystem.setUser(sshUrl.split("@")[0]);
-                                hostSystem.setHost(sshUrl.split("@")[1]);
-                                hostSystem.setAppNm(app.getName());
-                                hostSystem.setDomain(app.getDomain().getId());
-                                hostSystem.setGearGroupNm(gearGroup.getName());
-                                hostSystem.setUserId(userId);
-                                hostSystem.setCartridgeNm(StringUtils.join(cartridgeNmList, ", "));
-
-                                hostSystemList.add(hostSystem);
                             }
+                            for (IGear gear : gearGroup.getGears()) {
+                                if (StringUtils.isNotEmpty(gear.getSshUrl())) {
+                                    String sshUrl = gear.getSshUrl().replaceAll("ssh://", "");
+
+                                    HostSystem hostSystem = new HostSystem();
+                                    hostSystem.setUser(sshUrl.split("@")[0]);
+                                    hostSystem.setHost(sshUrl.split("@")[1]);
+                                    hostSystem.setAppNm(app.getName());
+                                    hostSystem.setDomain(app.getDomain().getId());
+                                    hostSystem.setGearGroupNm(gearGroup.getName());
+                                    hostSystem.setUserId(userId);
+                                    hostSystem.setCartridgeNm(StringUtils.join(cartridgeNmList, ", "));
+
+                                    hostSystemList.add(hostSystem);
+                                }
+                            }
+
+                        }
+                    } else {
+                        if (StringUtils.isNotEmpty(app.getSshUrl())) {
+                            String sshUrl = app.getSshUrl().replaceAll("ssh://", "");
+
+                            HostSystem hostSystem = new HostSystem();
+                            hostSystem.setUser(sshUrl.split("@")[0]);
+                            hostSystem.setHost(sshUrl.split("@")[1]);
+                            hostSystem.setAppNm(app.getName());
+                            hostSystem.setDomain(app.getDomain().getId());
+                            hostSystem.setUserId(userId);
+
+                            hostSystemList.add(hostSystem);
                         }
 
-                    }
-                } else {
-                    if (StringUtils.isNotEmpty(app.getSshUrl())) {
-                        String sshUrl = app.getSshUrl().replaceAll("ssh://", "");
-
-                        HostSystem hostSystem = new HostSystem();
-                        hostSystem.setUser(sshUrl.split("@")[0]);
-                        hostSystem.setHost(sshUrl.split("@")[1]);
-                        hostSystem.setAppNm(app.getName());
-                        hostSystem.setDomain(app.getDomain().getId());
-                        hostSystem.setUserId(userId);
-
-                        hostSystemList.add(hostSystem);
                     }
 
                 }
-                
             }
             SystemDB.setSystem(hostSystemList, userId);
             retVal = viewAdminSystems();
@@ -148,6 +149,7 @@ public class SystemAction extends ActionSupport implements ServletRequestAware {
         appNmList = SystemDB.getAppNms(con, userId);
         gearGroupList = SystemDB.getGearNms(con, userId);
         cartridgeNmList = SystemDB.getCartridgeNms(con,userId);
+        domainList = SystemDB.getDomains(con, userId);
         
         DBUtils.closeConn(con);
 
@@ -201,6 +203,12 @@ public class SystemAction extends ActionSupport implements ServletRequestAware {
     public void setCartridgeNmList(List<String> cartridgeNmList) {
         this.cartridgeNmList = cartridgeNmList;
     }
-    
-    
+
+    public List<String> getDomainList() {
+        return domainList;
+    }
+
+    public void setDomainList(List<String> domainList) {
+        this.domainList = domainList;
+    }
 }

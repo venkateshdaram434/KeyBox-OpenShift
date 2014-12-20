@@ -36,6 +36,7 @@ public class SystemDB {
     public static final String FILTER_BY_NAME = "app_nm";
     public static final String FILTER_BY_GEAR_GROUP_NM = "gear_group_nm";
     public static final String FILTER_BY_CARTRIDGE_NM = "cartridge_nm";
+    public static final String FILTER_BY_DOMAIN = "domain";
 
     public static final String SORT_BY_NAME = "app_nm";
     public static final String SORT_BY_USER = "user";
@@ -361,7 +362,7 @@ public class SystemDB {
 
 
         try {
-            PreparedStatement stmt = con.prepareStatement("select distinct domain from system where user_id=?");
+            PreparedStatement stmt = con.prepareStatement("select distinct domain from system where user_id=? order by domain asc");
             stmt.setLong(1, userId);
             ResultSet rs = stmt.executeQuery();
 
@@ -385,7 +386,7 @@ public class SystemDB {
 
 
         try {
-            PreparedStatement stmt = con.prepareStatement("select distinct app_nm from system where user_id=?");
+            PreparedStatement stmt = con.prepareStatement("select distinct app_nm from system where user_id=? order by app_nm asc");
             stmt.setLong(1, userId);
             ResultSet rs = stmt.executeQuery();
 
@@ -408,7 +409,7 @@ public class SystemDB {
 
 
         try {
-            PreparedStatement stmt = con.prepareStatement("select distinct gear_group_nm from system where user_id=?");
+            PreparedStatement stmt = con.prepareStatement("select distinct gear_group_nm from system where user_id=? order by gear_group_nm asc");
             stmt.setLong(1, userId);
             ResultSet rs = stmt.executeQuery();
 
@@ -431,7 +432,7 @@ public class SystemDB {
         List<String> cartridgeList = new ArrayList<String>();
 
         try {
-            PreparedStatement stmt = con.prepareStatement("select distinct cartridge_nm from system where user_id=?");
+            PreparedStatement stmt = con.prepareStatement("select distinct cartridge_nm from system where user_id=? order by cartridge_nm asc");
             stmt.setLong(1, userId);
             ResultSet rs = stmt.executeQuery();
 

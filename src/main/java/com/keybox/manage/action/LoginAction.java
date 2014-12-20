@@ -48,6 +48,7 @@ public class LoginAction extends ActionSupport implements ServletRequestAware, S
     boolean otpEnabled="true".equals(AppConfig.getProperty("enableOTP"));
 
     private static final String generatedKeyNm = AppConfig.getProperty("generatedKeyNm") + "-" + OpenShiftUtils.APP_DNS;
+    private static final String AUTH_ERROR="Authentication Failed : Login credentials are invalid";
 
     @Action(value = "/login",
             results = {
@@ -91,7 +92,7 @@ public class LoginAction extends ActionSupport implements ServletRequestAware, S
                 //get shared secret
                 sharedSecret = AuthDB.getSharedSecret(auth.getOpenshiftId());
                 if (StringUtils.isNotEmpty(sharedSecret) && (auth.getOtpToken() == null || !OTPUtil.verifyToken(sharedSecret, auth.getOtpToken()))) {
-                    addFieldError("auth.otpToken", "Invalid");
+                    addActionError(AUTH_ERROR);
                     return INPUT;
                 }
             }
@@ -118,7 +119,7 @@ public class LoginAction extends ActionSupport implements ServletRequestAware, S
 
         } catch (IOException ex) {
             ex.printStackTrace();
-            addActionError("Invalid username and password combination");
+            addActionError(AUTH_ERROR);
             return INPUT;
         }
 
