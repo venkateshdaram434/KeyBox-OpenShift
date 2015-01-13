@@ -52,7 +52,7 @@
                 }
             });
 
-            $("form input, form select, form textarea").keydown(function(event){
+            $("form input, form select").keydown(function(event){
                 if (event.keyCode == 13) {
                     $(this).closest("form").submit();
                 }
