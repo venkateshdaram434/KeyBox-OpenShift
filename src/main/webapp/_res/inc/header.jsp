@@ -46,9 +46,15 @@
                 }
             });
 
-            $(".btn").keyup(function (event) {
+            $(".btn").keydown(function (event) {
                 if (event.keyCode == 13) {
                     $(this).click();
+                }
+            });
+
+            $("form input, form select, form textarea").keydown(function(event){
+                if (event.keyCode == 13) {
+                    $(this).closest("form").submit();
                 }
             });
         });

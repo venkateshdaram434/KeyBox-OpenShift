@@ -219,8 +219,7 @@ public class SSHUtil {
             if("true".equals("agentForwarding")){
                 ((ChannelShell) channel).setAgentForwarding(true);    
             }
- 	        //based on 80x24, 640x480
-            ((ChannelShell) channel).setPtyType("xterm",98,24,784,480);
+            ((ChannelShell) channel).setPtyType("xterm");
 
             InputStream outFromChannel = channel.getInputStream();
 
