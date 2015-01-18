@@ -18,84 +18,79 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <!DOCTYPE html>
 <html>
-<head>
+    <head>
 
-    <jsp:include page="/_res/inc/header.jsp"/>
+        <jsp:include page="/_res/inc/header.jsp"/>
 
-    <script type="text/javascript">
-        //break if loaded in frame
-        if (top != self) top.location.replace(location);
+        <script type="text/javascript">
+            //break if loaded in frame
+            if (top != self)
+                top.location.replace(location);
 
-        $(document).ready(function () {
-            $(".submit_btn").button().click(function () {
-                $(this).parents('.container').find('form').submit();
+            $(document).ready(function() {
+                $(".submit_btn").button().click(function() {
+                    $(this).parents('.container').find('form').submit();
+                });
             });
-        });
 
-    </script>
-    <title>KeyBox - One-Time Password Setup</title>
-</head>
-<body>
+        </script>
+        <title>KeyBox - One-Time Password Setup</title>
+    </head>
+    <body>
 
-<div class="navbar navbar-default navbar-fixed-top" role="navigation">
-    <div class="container">
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
 
-        <div class="navbar-header">
-            <div class="navbar-brand">
-                <div class="nav-img"><img src="<%= request.getContextPath() %>/img/keybox_50x38.png"/></div>
+                <div class="navbar-header">
+                    <div class="navbar-brand">
+                        <div class="nav-img"><img src="<%= request.getContextPath() %>/img/keybox_50x38.png" alt="keybox"/></div>
+                    </div>
+                    <div class="navbar-brand">
+                        KeyBox<span class="note" style="padding-top:2px;font-size: x-small"> - OpenShift</span>
+                    </div>
+                </div>
+                <!--/.nav-collapse -->
             </div>
-            <div class="navbar-brand">
-                KeyBox<span class="note" style="padding-top:2px;font-size: x-small"> - OpenShift</span>
+        </div>
+
+        <div class="container">
+
+            <h3>Setup Two-Factor Authentication</h3>
+
+            <div class="row featurette">
+                <div class="col-md-7">
+
+                    <img src="qrImage.action?qrImage=<s:property value="qrImage"/>" alt="<s:property value="qrImage"/>"/>
+
+                </div>
+                <div class="col-md-5">
+                    <p>
+                        Scan the QR Code using <a href="https://fedorahosted.org/freeotp" target="_blank">FreeOTP</a> on your Android or iOS device to setup two-factor authentication.
+                    </p>
+                    <table class="table table-striped table-hover ">
+                        <thead>
+                            <tr>
+                                <th>FreeOTP</th>
+                                <th>Link</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Android</td>
+                                <td><a href="https://play.google.com/store/apps/details?id=org.fedorahosted.freeotp" target="_blank">Google Play</a></td>
+                            </tr>
+
+                            <tr>
+                                <td>iOS</td>
+                                <td><a href="https://itunes.apple.com/us/app/freeotp/id872559395" target="_blank">iTunes</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <button onclick="window.location = 'menu.action'" class="btn btn-danger spacer spacer-middle">Skip for Now</button>
+                    <button onclick="window.location = 'otpSubmit.action'" class="btn btn-default spacer spacer-right">Got It!</button>
+                </div>
             </div>
         </div>
-        <!--/.nav-collapse -->
-    </div>
-</div>
-
-<div class="container">
-
-    <h3>Setup Two-Factor Authentication</h3>
-
-    <div class="row featurette">
-        <div class="col-md-7">
-
-            <img src="qrImage.action?qrImage=<s:property value="qrImage"/>"/>
-
-        </div>
-        <div class="col-md-5">
-            <p>
-                Scan the QR Code using <a href="https://fedorahosted.org/freeotp" target="_blank">FreeOTP</a> on your Android or iOS device to setup two-factor authentication.
-            <table class="table table-striped table-hover ">
-                <thead>
-                <tr>
-                    <th>Platform</th>
-                    <th>Link</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td>Android</td>
-                    <td><a href="https://play.google.com/store/apps/details?id=org.fedorahosted.freeotp" target="_blank">Google Play</a></td>
-                </tr>
-
-                <tr>
-                    <td>iOS</td>
-                    <td><a href="https://itunes.apple.com/us/app/freeotp/id872559395" target="_blank">iTunes</a></td>
-                </tr>
-            </tbody>
-            </table>
-
-            </p>
-            <button onclick="window.location='setSystems.action'" class="btn btn-danger">Skip for Now</button>
-            <button onclick="window.location='otpSubmit.action'" class="btn btn-default">Got It!</button>
-        </div>
-    </div>
-
-
-
-
-
-</div>
-
-</body>
+    </body>
 </html>

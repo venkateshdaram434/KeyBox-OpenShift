@@ -391,7 +391,7 @@
 
         <div class="navbar-header">
             <div class="navbar-brand" >
-                <div class="nav-img"><img src="<%= request.getContextPath() %>/img/keybox_50x38.png"/></div>
+                <div class="nav-img"><img src="<%= request.getContextPath() %>/img/keybox_50x38.png" alt="keybox"/></div>
             </div>
             <div class="navbar-brand">
                 KeyBox<span class="note" style="padding-top:2px;font-size: x-small"> - OpenShift</span>

@@ -191,7 +191,7 @@
     </s:if>
 
     <s:if test="sortedSet.itemList!= null && !sortedSet.itemList.isEmpty()">
-        <div class="btn btn-default select_frm_btn">Create SSH Terminals</div>
+        <div class="btn btn-default select_frm_btn spacer spacer-bottom">Create SSH Terminals</div>
     </s:if>
     <s:else>
         <div class="actionMessage">
