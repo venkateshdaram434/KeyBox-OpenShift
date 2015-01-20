@@ -57,6 +57,9 @@
                     $(this).closest("form").submit();
                 }
             });
+
+            $('.scrollableTable').tableScroll({height: 450});
+            $(".scrollableTable tr:odd").css("background-color", "#e0e0e0");
         });
 
     });
