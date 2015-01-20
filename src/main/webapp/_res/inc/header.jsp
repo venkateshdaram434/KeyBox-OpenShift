@@ -18,7 +18,6 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 <script src="<%= request.getContextPath() %>/_res/js/jquery-2.1.1.js"></script>
-<script src="<%= request.getContextPath() %>/_res/js/jquery-ui.js"></script>
 <script src="<%= request.getContextPath() %>/_res/js/jquery.tablescroll.js"></script>
 <script src="<%= request.getContextPath() %>/_res/js/tty/term.js"></script>
 <script src="<%= request.getContextPath() %>/_res/js/bootstrap.js"></script>
@@ -46,7 +45,7 @@
                 }
             });
 
-            $(".btn").keydown(function (event) {
+            $(".btn").keyup(function (event) {
                 if (event.keyCode == 13) {
                     $(this).click();
                 }
@@ -57,15 +56,15 @@
                     $(this).closest("form").submit();
                 }
             });
+        });
+        
+        $('.scrollableTable').tableScroll({height: 450});
+        $(".scrollableTable tr:odd").css("background-color", "#e0e0e0");
 
-            $('.scrollableTable').tableScroll({height: 450});
-            $(".scrollableTable tr:odd").css("background-color", "#e0e0e0");
-
-            $(':input:enabled:visible:first').focus();
-
-            $('.modal').on('shown.bs.modal', function () {
-                $('input:enabled:visible:first').focus();
-            });
+        $(':input:enabled:visible:first').focus();
+        
+        $('.modal').on('shown.bs.modal', function () {
+            $('input:enabled:visible:first').focus();
         });
 
     });
