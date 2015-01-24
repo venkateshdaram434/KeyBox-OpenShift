@@ -33,7 +33,6 @@ import org.apache.struts2.interceptor.ServletResponseAware;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 
 /**
@@ -117,7 +116,7 @@ public class LoginAction extends ActionSupport implements ServletRequestAware, S
             AuthUtil.setAuthToken(servletRequest.getSession(), auth.getAuthToken());
             AuthUtil.setTimeout(servletRequest.getSession());
 
-        } catch (IOException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             addActionError(AUTH_ERROR);
             return INPUT;
@@ -142,7 +141,7 @@ public class LoginAction extends ActionSupport implements ServletRequestAware, S
             String authToken = AuthUtil.getAuthToken(servletRequest.getSession());
             IOpenShiftConnection connection = new ConnectionBuilder(OpenShiftUtils.LIBRA_SERVER).token(authToken).create();
             connection.getUser().getAuthorization().destroy();
-        } catch (IOException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
         AuthUtil.deleteAllSession(servletRequest.getSession());

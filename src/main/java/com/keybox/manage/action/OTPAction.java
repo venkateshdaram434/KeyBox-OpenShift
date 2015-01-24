@@ -36,7 +36,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.util.Date;
 import java.util.Hashtable;
 
@@ -89,7 +88,7 @@ public class OTPAction extends ActionSupport implements ServletRequestAware, Ser
         try {
             IOpenShiftConnection connection = new ConnectionBuilder(OpenShiftUtils.LIBRA_SERVER).token(authToken).create();
             rhLogin = connection.getUser().getRhlogin();
-        } catch (IOException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
         String secret = OTPUtil.generateSecret();
