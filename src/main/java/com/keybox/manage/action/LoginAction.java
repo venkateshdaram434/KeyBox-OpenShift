@@ -154,11 +154,11 @@ public class LoginAction extends ActionSupport implements ServletRequestAware, S
      * Validates fields for auth submit
      */
     public void validateLoginSubmit() {
-        if (auth.getUsername() == null ||
+        if (auth == null || auth.getUsername() == null ||
                 auth.getUsername().trim().equals("")) {
             addFieldError("auth.username", "Required");
         }
-        if (auth.getPassword() == null ||
+        if (auth == null || auth.getPassword() == null ||
                 auth.getPassword().trim().equals("")) {
             addFieldError("auth.password", "Required");
         }
