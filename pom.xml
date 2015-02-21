@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.keybox</groupId>
     <artifactId>keybox-openshift</artifactId>
-    <version>0.21.01</version>
+    <version>0.21.02</version>
     <packaging>war</packaging>
     <name>KeyBox-OpenShift</name>
     <properties>
