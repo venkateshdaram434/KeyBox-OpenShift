@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.keybox</groupId>
     <artifactId>keybox-openshift</artifactId>
-    <version>0.21.02</version>
+    <version>0.21.03</version>
     <packaging>war</packaging>
     <name>KeyBox-OpenShift</name>
     <properties>
@@ -49,12 +49,12 @@
         <dependency>
             <groupId>com.google.zxing</groupId>
             <artifactId>core</artifactId>
-            <version>3.1.0</version>
+            <version>3.2.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tomcat</groupId>
             <artifactId>tomcat7-websocket</artifactId>
-            <version>7.0.57</version>
+            <version>7.0.59</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
