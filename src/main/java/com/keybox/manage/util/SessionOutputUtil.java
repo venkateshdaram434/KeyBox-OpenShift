@@ -15,6 +15,8 @@
  */
 package com.keybox.manage.util;
 
+import com.keybox.common.util.AppConfig;
+import com.keybox.manage.model.SessionHostOutput;
 import com.keybox.manage.model.SessionOutput;
 import com.keybox.manage.model.UserSessionsOutput;
 import org.apache.commons.lang3.StringUtils;
@@ -50,13 +52,13 @@ public class SessionOutputUtil {
      * removes session output for host system
      *
      * @param sessionId    session id
-     * @param hostSystemId host system id
+     * @param instanceId id of host system instance
      */
-    public static void removeOutput(Long sessionId, Long hostSystemId) {
+    public static void removeOutput(Long sessionId, Integer instanceId) {
 
         UserSessionsOutput userSessionsOutput = userSessionsOutputMap.get(sessionId);
         if (userSessionsOutput != null) {
-            userSessionsOutput.getSessionOutputMap().remove(hostSystemId);
+            userSessionsOutput.getSessionOutputMap().remove(instanceId);
         }
     }
 
@@ -64,16 +66,17 @@ public class SessionOutputUtil {
      * adds a new output
      *
      * @param sessionId     session id
+     * @param hostId        host id
      * @param sessionOutput session output object
      */
-    public static void addOutput(Long sessionId, SessionOutput sessionOutput) {
+    public static void addOutput(Long sessionId, Long hostId, SessionOutput sessionOutput) {
 
         UserSessionsOutput userSessionsOutput = userSessionsOutputMap.get(sessionId);
         if (userSessionsOutput == null) {
             userSessionsOutputMap.put(sessionId, new UserSessionsOutput());
             userSessionsOutput = userSessionsOutputMap.get(sessionId);
         }
-        userSessionsOutput.getSessionOutputMap().put(sessionOutput.getHostSystemId(), new StringBuilder());
+        userSessionsOutput.getSessionOutputMap().put(sessionOutput.getInstanceId(), new SessionHostOutput(hostId, new StringBuilder()));
 
 
     }
@@ -83,17 +86,17 @@ public class SessionOutputUtil {
      * adds a new output
      *
      * @param sessionId    session id
-     * @param hostSystemId host system id
+     * @param instanceId id of host system instance
      * @param value        Array that is the source of characters
      * @param offset       The initial offset
      * @param count        The length
      */
-    public static void addToOutput(Long sessionId, Long hostSystemId, char value[], int offset, int count) {
+    public static void addToOutput(Long sessionId, Integer instanceId, char value[], int offset, int count) {
 
 
         UserSessionsOutput userSessionsOutput = userSessionsOutputMap.get(sessionId);
         if (userSessionsOutput != null) {
-            userSessionsOutput.getSessionOutputMap().get(hostSystemId).append(value, offset, count);
+            userSessionsOutput.getSessionOutputMap().get(instanceId).getOutput().append(value, offset, count);
         }
 
     }
@@ -105,7 +108,7 @@ public class SessionOutputUtil {
      * @param sessionId session id object
      * @return session output list
      */
-    public static List<SessionOutput> getOutput(Connection con, Long sessionId) {
+    public static List<SessionOutput> getOutput(Long sessionId) {
         List<SessionOutput> outputList = new ArrayList<SessionOutput>();
 
 
@@ -113,21 +116,25 @@ public class SessionOutputUtil {
         if (userSessionsOutput != null) {
 
 
-            for (Long key : userSessionsOutput.getSessionOutputMap().keySet()) {
+
+            for (Integer key : userSessionsOutput.getSessionOutputMap().keySet()) {
 
                 //get output chars and set to output
                 try {
-                    StringBuilder sb = userSessionsOutput.getSessionOutputMap().get(key);
+                    SessionHostOutput sessionHostOutput = userSessionsOutput.getSessionOutputMap().get(key);
+                    Long hostId = sessionHostOutput.getId();
+                    StringBuilder sb = sessionHostOutput.getOutput();
                     if (sb != null) {
                         SessionOutput sessionOutput = new SessionOutput();
                         sessionOutput.setSessionId(sessionId);
-                        sessionOutput.setHostSystemId(key);
+                        sessionOutput.setHostSystemId(hostId);
+                        sessionOutput.setInstanceId(key);
 
                         sessionOutput.setOutput(sb.toString());
 
                         if (StringUtils.isNotEmpty(sessionOutput.getOutput())) {
                             outputList.add(sessionOutput);
-                            userSessionsOutput.getSessionOutputMap().put(key, new StringBuilder());
+                            userSessionsOutput.getSessionOutputMap().put(key, new SessionHostOutput(hostId, new StringBuilder()));
                         }
                     }
                 } catch (Exception ex) {

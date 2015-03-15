@@ -18,6 +18,7 @@ package com.keybox.manage.util;
 import com.jcraft.jsch.*;
 import com.keybox.common.util.AppConfig;
 import com.keybox.manage.db.PrivateKeyDB;
+import com.keybox.manage.db.SystemDB;
 import com.keybox.manage.db.SystemStatusDB;
 import com.keybox.manage.model.*;
 import com.keybox.manage.task.SecureShellTask;
@@ -176,6 +177,33 @@ public class SSHUtil {
 
 
     /**
+     * return the next instance id based on ids defined in the session map
+     *
+     * @param userId        user id
+     * @param userSessionMap user session map
+     * @return
+     */
+    private static int getNextInstanceId(Long userId, Map<Long, UserSchSessions> userSessionMap ){
+
+        Integer instanceId=1;
+        if(userSessionMap.get(userId)!=null){
+
+            for(Integer id :userSessionMap.get(userId).getSchSessionMap().keySet()) {
+                if (!id.equals(instanceId) ) {
+
+                    if(userSessionMap.get(userId).getSchSessionMap().get(instanceId) == null) {
+                        return instanceId;
+                    }
+                }
+                instanceId = instanceId + 1;
+            }
+        }
+        return instanceId;
+
+    }
+
+
+    /**
      * open new ssh session on host system
      *
      * @param passphrase     key passphrase for instance
@@ -189,7 +217,9 @@ public class SSHUtil {
 
         JSch jsch = new JSch();
 
+        int instanceId = getNextInstanceId(userId ,userSessionMap);
         hostSystem.setStatusCd(HostSystem.SUCCESS_STATUS);
+        hostSystem.setInstanceId(instanceId);
 
         SchSession schSession = null;
 
@@ -216,8 +246,8 @@ public class SSHUtil {
             session.setConfig("StrictHostKeyChecking", "no");
             session.connect(SESSION_TIMEOUT);
             Channel channel = session.openChannel("shell");
-            if("true".equals("agentForwarding")){
-                ((ChannelShell) channel).setAgentForwarding(true);    
+            if ("true".equals(AppConfig.getProperty("agentForwarding"))) {
+                ((ChannelShell) channel).setAgentForwarding(true);
             }
             ((ChannelShell) channel).setPtyType("xterm");
 
@@ -227,6 +257,7 @@ public class SSHUtil {
             //new session output
             SessionOutput sessionOutput = new SessionOutput();
             sessionOutput.setHostSystemId(hostSystem.getId());
+            sessionOutput.setInstanceId(instanceId);
             sessionOutput.setSessionId(userId);
 
 
@@ -251,12 +282,16 @@ public class SSHUtil {
             schSession.setHostSystem(hostSystem);
 
 
+
         } catch (Exception e) {
             hostSystem.setErrorMsg(e.getMessage());
             if (e.getMessage().toLowerCase().contains("userauth fail")) {
                 hostSystem.setStatusCd(HostSystem.PUBLIC_KEY_FAIL_STATUS);
             } else if (e.getMessage().toLowerCase().contains("auth fail") || e.getMessage().toLowerCase().contains("auth cancel")) {
                 hostSystem.setStatusCd(HostSystem.AUTH_FAIL_STATUS);
+            } else if (e.getMessage().toLowerCase().contains("unknownhostexception")){
+                hostSystem.setErrorMsg("DNS Lookup Failed");
+                hostSystem.setStatusCd(HostSystem.HOST_FAIL_STATUS);
             } else {
                 hostSystem.setStatusCd(HostSystem.GENERIC_FAIL_STATUS);
             }
@@ -272,10 +307,10 @@ public class SSHUtil {
             if (userSchSessions == null) {
                 userSchSessions = new UserSchSessions();
             }
-            Map<Long, SchSession> schSessionMap = userSchSessions.getSchSessionMap();
+            Map<Integer , SchSession> schSessionMap = userSchSessions.getSchSessionMap();
 
             //add server information
-            schSessionMap.put(hostSystem.getId(), schSession);
+            schSessionMap.put(instanceId, schSession);
             userSchSessions.setSchSessionMap(schSessionMap);
             //add back to map
             userSessionMap.put(userId, userSchSessions);

@@ -41,9 +41,8 @@ public class SentOutputTask implements Runnable {
 
     public void run() {
 
-        Connection con = DBUtils.getConn();
         while (session.isOpen()) {
-            List<SessionOutput> outputList = SessionOutputUtil.getOutput(con, sessionId);
+            List<SessionOutput> outputList = SessionOutputUtil.getOutput(sessionId);
             try {
                 if (outputList != null && !outputList.isEmpty()) {
                     String json = new Gson().toJson(outputList);
@@ -58,6 +57,5 @@ public class SentOutputTask implements Runnable {
 
         }
 
-        DBUtils.closeConn(con);
     }
 }

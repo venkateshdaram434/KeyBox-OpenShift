@@ -23,6 +23,7 @@ package com.keybox.manage.model;
 public class SessionOutput {
     Long sessionId;
     Long hostSystemId;
+    Integer instanceId;
     String output;
 
 
@@ -50,5 +51,13 @@ public class SessionOutput {
 
     public void setOutput(String output) {
         this.output = output;
+    }
+
+    public Integer getInstanceId() {
+        return instanceId;
+    }
+
+    public void setInstanceId(Integer instanceId) {
+        this.instanceId = instanceId;
     }
 }

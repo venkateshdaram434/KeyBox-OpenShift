@@ -86,8 +86,7 @@ public class SecureShellWS {
                 }
 
                 for (String idStr : (ArrayList<String>) jsonRoot.get("id")) {
-                    Long id = Long.parseLong(idStr);
-
+                    Integer id = Integer.parseInt(idStr);
 
                     //get servletRequest.getSession() for user
                     UserSchSessions userSchSessions = SecureShellAction.getUserSchSessionMap().get(sessionId);
@@ -123,9 +122,9 @@ public class SecureShellWS {
         if (SecureShellAction.getUserSchSessionMap() != null) {
             UserSchSessions userSchSessions = SecureShellAction.getUserSchSessionMap().get(sessionId);
             if (userSchSessions != null) {
-                Map<Long, SchSession> schSessionMap = userSchSessions.getSchSessionMap();
+                Map<Integer, SchSession> schSessionMap = userSchSessions.getSchSessionMap();
 
-                for (Long sessionKey : schSessionMap.keySet()) {
+                for (Integer sessionKey : schSessionMap.keySet()) {
 
                     SchSession schSession = schSessionMap.get(sessionKey);
 

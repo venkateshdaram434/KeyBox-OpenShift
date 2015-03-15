@@ -135,6 +135,8 @@
     <s:if test="sortedSet.itemList!= null && !sortedSet.itemList.isEmpty()">
 
         <s:form action="selectSystemsForCompositeTerms" id="select_frm" theme="simple">
+            <div class="scrollWrapper">
+                
             <table class="table-striped scrollableTable" style="min-width:80%">
                 <thead>
 
@@ -184,6 +186,7 @@
                 </s:iterator>
                 </tbody>
             </table>
+            </div>
         </s:form>
     </s:if>
 

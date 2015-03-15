@@ -34,12 +34,14 @@ public class HostSystem {
     String statusCd=INITIAL_STATUS;
     String errorMsg;
     Long userId;
+    Integer instanceId;
 
     public static final String INITIAL_STATUS="INITIAL";
     public static final String AUTH_FAIL_STATUS="AUTHFAIL";
     public static final String PUBLIC_KEY_FAIL_STATUS="KEYAUTHFAIL";
     public static final String GENERIC_FAIL_STATUS="GENERICFAIL";
     public static final String SUCCESS_STATUS="SUCCESS";
+    public static final String HOST_FAIL_STATUS="HOSTFAIL";
 
 
 
@@ -155,5 +157,11 @@ public class HostSystem {
         this.gearGroupNm = gearGroupNm;
     }
 
-   
+    public Integer getInstanceId() {
+        return instanceId;
+    }
+
+    public void setInstanceId(Integer instanceId) {
+        this.instanceId = instanceId;
+    }
 }

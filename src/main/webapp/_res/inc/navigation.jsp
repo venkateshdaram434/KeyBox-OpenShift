@@ -38,6 +38,7 @@
         <div class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
                 <li><a href="../admin/setSystems.action">Secure Shell</a></li>
+                <li><a href="../admin/userSettings.action">Settings</a></li>
 
                 <li><a href="../logout.action">Logout</a></li>
             </ul>
