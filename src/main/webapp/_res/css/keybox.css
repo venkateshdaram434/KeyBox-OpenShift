@@ -1,4 +1,3 @@
-
 body {
     padding-top: 50px;
 }
@@ -6,11 +5,10 @@ body {
 a {
     color: #666;
 }
-
 table {
     border-collapse: collapse;
     font-size: small;
-    min-width: 95%;
+    min-width: 50%;
 }
 
 table tbody {
@@ -24,7 +22,6 @@ table tbody {
 .navbar .container a {
     text-decoration: none;
 }
-
 .navbar .note {
     padding: 10px 2px 2px 0;
     float: right;
@@ -32,7 +29,7 @@ table tbody {
 
 form table {
     background-color: #FFF;
-    min-width: 10px;
+    min-width:10px;
 }
 
 form table input {
@@ -46,11 +43,11 @@ form table td, form table th {
 table td, table th {
     vertical-align: middle;
     line-height: 1.42857;
-    padding: 10px;
+    padding:10px;
 }
 
 .table-striped {
-    border: 1px solid #CCC;
+    border: 1px solid #CCCCCC;
 }
 
 .tablescroll_head th {
@@ -59,7 +56,10 @@ table td, table th {
 
 .table-striped th, .tablescroll_head th, .table-striped td, .tablescroll_head td {
     padding: 10px 15px 10px 10px;
+}
 
+.tablescroll_body td {
+    padding: 10px 15px 10px 10px;
 }
 
 .table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td {
@@ -73,6 +73,7 @@ table td, table th {
     border: 1px solid #CCC;
     white-space: nowrap;
 }
+
 
 .table-striped td a, .table-striped th a, .tablescroll_head th a {
     white-space: nowrap;
@@ -88,8 +89,8 @@ table td, table th {
     color: #cc0000;
 }
 
-.wwFormTable label,
-.wwFormTable .label {
+form table label,
+form table .label {
     font-size: small;
     font-weight: bold;
     color: #666;
@@ -156,11 +157,11 @@ div.block .input {
 
 div.term {
     margin: 10px;
-    border: 1px solid #CCC;
+    border: 1px solid #CCCCCC;
 }
 
 div.termwrapper {
-    width: 98%;
+    width:98%;
     margin: 0 auto;
 }
 
@@ -208,7 +209,7 @@ div.termwrapper div h6 {
 }
 
 .term-header {
-    cursor: move;
+    cursor:move;
 }
 
 .top_link {
@@ -217,15 +218,10 @@ div.termwrapper div h6 {
     font-weight: bold;
     text-decoration: underline;
     cursor: pointer;
-
 }
 
 .clear {
     clear: both;
-}
-
-.ui-dialog-titlebar-close {
-    display: none;
 }
 
 .errorsBg {
@@ -285,18 +281,23 @@ div.termwrapper div h6 {
     margin-left: -50px;
 }
 
-.navbar-brand {
-    padding: 15px 5px 0 15px
-}
-
 .align_left {
-    padding-left: 0;
-    margin-left: 0;
+    padding-left :0;
+    margin-left :0;
 }
 
 .align_right {
-    padding-right: 0;
-    margin-right: 0;
+    padding-right :0;
+    margin-right :0;
+}
+
+.modal-body .row {
+    padding-left:10px;
+}
+
+.modal-footer .btn {
+    margin-bottom: 0;
+    padding: 8px 12px;
 }
 
 .spacer {
@@ -327,49 +328,47 @@ div.termwrapper div h6 {
     margin-top: 25px;
 }
 
-.modal-wide .modal-dialog {
-    width: 60%;
+a.btn {
+    text-decoration: none;
+}
+.existing_key_label .alert, .new_key_label  .alert{
+    float:right;
+    margin-right:30px;
+    padding:6px 18px;
 }
 
 .scrollWrapperActive {
     overflow-y: scroll;
-    height: 450px;
+    height:450px;
     display: inline-block;
 }
-
-.uploadScrollWrapperActive {
+.uploadScrollWrapperActive{
     overflow-y: scroll;
-    height: 200px;
+    height:200px;
     display: inline-block;
 }
 
 .uploadScrollableTable {
     min-width: 600px;
 }
-
 .scrollableTable {
     min-width: 700px;
 }
-
 .scrollableTable th {
     background-color: #e0e0e0;
 }
-
 table.floatThead-table {
     border-top: none;
     border-bottom: none;
     background-color: #FFF;
 }
-
 .show {
     display: block;
 }
-
 .hidden {
     display: none;
     visibility: hidden;
 }
-
 .invisible {
     visibility: hidden;
 }
