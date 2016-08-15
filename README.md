@@ -21,7 +21,7 @@ Install and Run with OpenShift Online
 ------
 Install with RHC
 
-    rhc app create keybox jbossews-2.0 --from-code git://github.com/skavanagh/KeyBox-OpenShift.git
+    rhc app create keybox jbossews-2.0 --from-code git://github.com/skavanagh/KeyBox-OpenShift.git --gear-size medium
 
 Open browser to
 
@@ -38,8 +38,7 @@ Alternate Installation with WildFly
 ------
 Alternate Installation using the [WildFly Community Cartridge](https://github.com/openshift-cartridges/openshift-wildfly-cartridge)
 
-    rhc app create keybox https://cartreflect-claytondev.rhcloud.com/reflect?github=openshift-cartridges/openshift-wildfly-cartridge --from-code git://github.com/skavanagh/KeyBox-OpenShift.git
-
+    rhc app create keybox https://cartreflect-claytondev.rhcloud.com/reflect?github=openshift-cartridges/openshift-wildfly-cartridge --from-code git://github.com/skavanagh/KeyBox-OpenShift.git --gear-size medium
 
 Screenshots
 -----------
